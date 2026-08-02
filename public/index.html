@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Libro Mayor — Plantillas digitales de finanzas y productividad</title>
+<meta name="description" content="Plantillas de Excel, Google Sheets y Notion para presupuesto, control de gastos y ahorro. Descarga inmediata.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark">≡</span>
+      <span class="brand-name">Libro Mayor</span>
+    </a>
+    <nav class="topnav">
+      <a href="#catalogo">Catálogo</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#faq">Preguntas</a>
+    </nav>
+    <button class="cart-toggle" id="cart-toggle" aria-label="Abrir carrito">
+      <span>Carrito</span>
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO: signature live-ledger grid -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">Fila 1 · Columna A</p>
+        <h1>Tus cuentas,<br>en orden desde<br>la primera celda.</h1>
+        <p class="hero-sub">Plantillas de Excel, Google Sheets y Notion para presupuesto, control de gastos y metas de ahorro. Sin suscripciones, sin curvas de aprendizaje: abres el archivo y ya está funcionando.</p>
+        <div class="hero-cta">
+          <a href="#catalogo" class="btn btn-primary">Ver plantillas</a>
+          <a href="#como-funciona" class="btn btn-ghost">Cómo funciona</a>
+        </div>
+      </div>
+      <div class="hero-ledger" aria-hidden="true">
+        <div class="ledger-head">
+          <span></span><span>A</span><span>B</span><span>C</span>
+        </div>
+        <div class="ledger-row" style="--d:0">
+          <span class="rn">1</span>
+          <span class="cell" data-label="Ingresos">$820.000</span>
+          <span class="cell" data-label="Gastos">$540.000</span>
+          <span class="cell sum" data-label="Saldo">$280.000</span>
+        </div>
+        <div class="ledger-row" style="--d:1">
+          <span class="rn">2</span>
+          <span class="cell">Arriendo</span>
+          <span class="cell neg">-$310.000</span>
+          <span class="cell"></span>
+        </div>
+        <div class="ledger-row" style="--d:2">
+          <span class="rn">3</span>
+          <span class="cell">Ahorro meta</span>
+          <span class="cell pos">+$120.000</span>
+          <span class="cell"></span>
+        </div>
+        <div class="ledger-row highlight" style="--d:3">
+          <span class="rn">4</span>
+          <span class="cell">Total balanceado</span>
+          <span class="cell"></span>
+          <span class="cell sum tick">✓</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGO -->
+  <section class="catalog" id="catalogo">
+    <div class="wrap">
+      <p class="eyebrow">Columna B · Catálogo</p>
+      <h2>Elige tu plantilla</h2>
+      <p class="section-sub">Archivo editable + guía de uso en video corto. Compatible con Excel, Google Sheets o Notion según el producto.</p>
+      <div class="grid" id="product-grid"></div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section class="how" id="como-funciona">
+    <div class="wrap">
+      <p class="eyebrow">Columna C · Proceso</p>
+      <h2>De la compra a tu archivo, automático</h2>
+      <div class="how-grid">
+        <div class="how-step">
+          <span class="rn">1</span>
+          <h3>Eliges y pagas</h3>
+          <p>Tarjeta de crédito, débito, transferencia o efectivo en puntos de pago — el checkout acepta todos los medios habilitados en Chile.</p>
+        </div>
+        <div class="how-step">
+          <span class="rn">2</span>
+          <h3>Confirmación automática</h3>
+          <p>Al aprobarse el pago, el sistema arma tu enlace de descarga sin intervención manual.</p>
+        </div>
+        <div class="how-step">
+          <span class="rn">3</span>
+          <h3>Recibes tu archivo</h3>
+          <p>Llega a tu correo en minutos, con la guía de uso incluida.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <p class="eyebrow">Columna D · Detalles</p>
+      <h2>Preguntas frecuentes</h2>
+      <details>
+        <summary>¿En qué formato llega la plantilla?</summary>
+        <p>Según el producto: archivo .xlsx editable, plantilla de Google Sheets (copia a tu Drive) o duplicado de Notion. Se indica en cada ficha.</p>
+      </details>
+      <details>
+        <summary>¿Qué medios de pago aceptan?</summary>
+        <p>Tarjetas de crédito y débito, transferencia bancaria y otros medios disponibles en la pasarela de pago local.</p>
+      </details>
+      <details>
+        <summary>¿Hay devoluciones?</summary>
+        <p>Por ser un producto digital de entrega inmediata, no hay devolución una vez descargado el archivo. Si el archivo llega dañado o no corresponde al comprado, se resuelve por correo.</p>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span>Libro Mayor — plantillas digitales</span>
+    <a href="mailto:contacto@tudominio.cl">contacto@tudominio.cl</a>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<aside class="cart-drawer" id="cart-drawer" aria-hidden="true">
+  <div class="cart-head">
+    <h2>Tu carrito</h2>
+    <button id="cart-close" aria-label="Cerrar carrito">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-foot">
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cart-total-amount">$0</span>
+    </div>
+    <button class="btn btn-primary btn-full" id="checkout-btn" disabled>Pagar ahora</button>
+    <p class="cart-note" id="checkout-note"></p>
+  </div>
+</aside>
+<div class="cart-overlay" id="cart-overlay"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+Reemplaza este archivo por tus plantillas reales.
+
+Cada archivo aquí debe llamarse exactamente igual al campo "file"
+de /data/products.json, por ejemplo:
+
+  presupuesto-mensual.xlsx
+  control-gastos-anual.xlsx
+  meta-ahorro.xlsx
+  planificador-notion-link.txt   (para Notion, un .txt con el link de la plantilla pública para duplicar)
+
+Esta carpeta NO se sirve directo al público — solo el endpoint
+/api/download puede leerla, y solo con un token válido generado
+después de un pago aprobado. Así nadie descarga el archivo sin pagar.

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "presupuesto-mensual",
+    "name": "Presupuesto mensual inteligente",
+    "format": "Excel / Google Sheets",
+    "price": 4990,
+    "tagline": "Ingresos, gastos fijos y variables con alertas automáticas de sobregiro.",
+    "file": "presupuesto-mensual.xlsx"
+  },
+  {
+    "id": "control-gastos-anual",
+    "name": "Control de gastos anual",
+    "format": "Excel",
+    "price": 6990,
+    "tagline": "Vista mes a mes con gráficos automáticos por categoría.",
+    "file": "control-gastos-anual.xlsx"
+  },
+  {
+    "id": "meta-ahorro",
+    "name": "Calculadora de meta de ahorro",
+    "format": "Google Sheets",
+    "price": 3990,
+    "tagline": "Define una meta y calcula cuánto ahorrar cada semana para llegar a tiempo.",
+    "file": "meta-ahorro.xlsx"
+  },
+  {
+    "id": "planificador-notion",
+    "name": "Planificador financiero + académico",
+    "format": "Notion",
+    "price": 5990,
+    "tagline": "Presupuesto personal y seguimiento de ramos/entregas en un solo espacio.",
+    "file": "planificador-notion-link.txt"
+  }
+]

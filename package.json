@@ -1,0 +1,13 @@
+{
+  "name": "libro-mayor-tienda",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tienda automatizada de plantillas digitales de finanzas y productividad.",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "mercadopago": "^2.0.15",
+    "resend": "^3.5.0"
+  }
+}
