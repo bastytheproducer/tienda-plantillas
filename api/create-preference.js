@@ -1,11 +1,8 @@
 // Vercel Serverless Function — POST /api/create-preference
-// Recibe { productIds: [...], email } desde el frontend, valida precios
-// contra el catálogo del servidor (nunca confía en precios del navegador),
-// y crea una preferencia de pago en Mercado Pago Checkout Pro.
-//
-// Variables de entorno requeridas (configurar en el panel de Vercel):
-//   MP_ACCESS_TOKEN   -> access token de producción de tu cuenta Mercado Pago
-//   SITE_URL          -> URL pública del sitio, ej: https://libromayor.cl
+// Recibe carrito + datos de despacho, valida precios contra el catálogo
+// del servidor, y crea una preferencia de pago en Mercado Pago Checkout Pro.
+// Los datos de despacho quedan guardados en la preferencia (metadata) para
+// que el webhook los use al avisar del pedido.
 
 const { MercadoPagoConfig, Preference } = require("mercadopago");
 const { getProducts } = require("../lib/kv");
@@ -16,7 +13,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { productIds, email } = req.body;
+    const { productIds, name, email, phone, address, comuna, ageConfirmed } = req.body;
 
     if (!Array.isArray(productIds) || productIds.length === 0) {
       return res.status(400).json({ error: "Carrito vacío" });
@@ -24,11 +21,22 @@ module.exports = async (req, res) => {
     if (!email || !email.includes("@")) {
       return res.status(400).json({ error: "Correo inválido" });
     }
+    if (!name || !phone || !address || !comuna) {
+      return res.status(400).json({ error: "Faltan datos de despacho" });
+    }
+    if (!ageConfirmed) {
+      return res.status(400).json({ error: "Debes confirmar que eres mayor de 18 años" });
+    }
 
-    // Solo se aceptan IDs que existan en el catálogo real del servidor.
     const products = await getProducts();
-    const items = productIds
-      .map((id) => products.find((p) => p.id === id))
+    const counts = {};
+    productIds.forEach((id) => (counts[id] = (counts[id] || 0) + 1));
+
+    const items = Object.entries(counts)
+      .map(([id, qty]) => {
+        const p = products.find((x) => x.id === id);
+        return p ? { ...p, quantity: qty } : null;
+      })
       .filter(Boolean);
 
     if (items.length === 0) {
@@ -38,24 +46,19 @@ module.exports = async (req, res) => {
     const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
     const preference = new Preference(client);
 
-    // Guardamos qué se compró y a qué correo entregar, codificado en
-    // external_reference. Lo fijamos nosotros al crear la preferencia,
-    // así que el webhook puede confiar en este valor cuando MP lo devuelva.
-    const externalReference = Buffer.from(
-      JSON.stringify({ productIds: items.map((i) => i.id), email })
-    ).toString("base64");
+    const metadata = { name, email, phone, address, comuna, age_confirmed: true };
 
     const result = await preference.create({
       body: {
         items: items.map((p) => ({
           id: p.id,
-          title: p.name,
-          quantity: 1,
+          title: `${p.name} (${p.volume})`,
+          quantity: p.quantity,
           unit_price: p.price,
           currency_id: "CLP",
         })),
-        payer: { email },
-        external_reference: externalReference,
+        payer: { name, email },
+        metadata,
         back_urls: {
           success: `${process.env.SITE_URL}/gracias.html`,
           failure: `${process.env.SITE_URL}/`,

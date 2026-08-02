@@ -10,14 +10,20 @@ module.exports = async (req, res) => {
       options: { criteria: "desc", sort: "date_created", limit: 30 },
     });
 
-    const orders = (search.results || []).map((p) => ({
-      id: p.id,
-      status: p.status,
-      amount: p.transaction_amount,
-      email: p.payer?.email,
-      date: p.date_created,
-      description: p.description,
-    }));
+    const orders = (search.results || []).map((p) => {
+      const meta = p.metadata || {};
+      return {
+        id: p.id,
+        status: p.status,
+        amount: p.transaction_amount,
+        email: meta.email || p.payer?.email,
+        name: meta.name || "",
+        phone: meta.phone || "",
+        address: meta.address || "",
+        comuna: meta.comuna || "",
+        date: p.date_created,
+      };
+    });
 
     return res.status(200).json({ orders });
   } catch (err) {

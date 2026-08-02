@@ -3,19 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barril y Miel — Cerveza artesanal</title>
-<meta name="description" content="Cerveza artesanal de autor: IPA, Lager, Stout y más. Pide online y coordina tu entrega o retiro.">
+<title>Barril & Miel — Cerveza artesanal e hidromiel</title>
+<meta name="description" content="Cerveza artesanal, hidromiel, lager y ale hechos con calma. Despacho a domicilio.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+<!-- AGE GATE -->
+<div class="age-gate" id="age-gate">
+  <div class="age-box">
+    <h2>Confirma tu edad</h2>
+    <p>Este sitio vende bebidas alcohólicas. Solo pueden ingresar personas mayores de 18 años. La venta de alcohol a menores de edad está prohibida por ley.</p>
+    <div class="age-actions">
+      <button class="btn btn-primary" id="age-yes">Soy mayor de 18</button>
+      <a class="btn btn-ghost" href="https://www.google.com">Salir</a>
+    </div>
+  </div>
+</div>
+
 <header class="topbar">
   <div class="wrap topbar-inner">
     <a href="#top" class="brand">
-      <span class="brand-mark">🍺</span>
-      <span class="brand-name">Barril y Miel</span>
+      <span class="brand-mark">⚶</span>
+      <span class="brand-name">Barril &amp; Miel</span>
     </a>
     <nav class="topnav">
       <a href="#catalogo">Catálogo</a>
@@ -31,100 +43,93 @@
 
 <main id="top">
 
-  <!-- HERO -->
-  <section class="hero">
+  <section class="hero hero-bg">
+    <div class="hero-overlay"></div>
     <div class="wrap hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow">Lote 001 · Fermentando desde cero</p>
-        <h1>Cerveza artesanal,<br>con carácter<br>y miel local.</h1>
-        <p class="hero-sub">Estilos clásicos y de autor, elaborados en lotes pequeños con ingredientes chilenos. Pide online, paga con Mercado Pago y coordina la entrega o el retiro.</p>
+        <p class="eyebrow">Elaboración artesanal</p>
+        <h1>Cerveza, hidromiel<br>y ale hechos<br>con calma.</h1>
+        <p class="hero-sub">Lotes chicos, sin apuro. Ale ámbar, lager clásica, IPA lupulada e hidromiel tradicional — despacho a domicilio o retiro en persona.</p>
+        <div class="hero-badge">🔞 Venta exclusiva para mayores de 18 años</div>
         <div class="hero-cta">
-          <a href="#catalogo" class="btn btn-primary">Ver cervezas</a>
+          <a href="#catalogo" class="btn btn-primary">Ver catálogo</a>
           <a href="#como-funciona" class="btn btn-ghost">Cómo funciona</a>
         </div>
       </div>
-      <div class="hero-card" aria-hidden="true">
-        <div class="hero-card-badge">Nuestro lanzamiento</div>
-        <h3>Porter Miel</h3>
-        <p class="hero-card-note">Malta tostada + miel local de la quinta.</p>
-        <div class="hero-card-meta">
-          <span>Botella 330 ml</span>
-          <span>ABV 6,2%</span>
-          <span>IBU 28</span>
-        </div>
-        <div class="hero-card-bar">
-          <span style="--w:62%">Cuerpo</span>
-          <span style="--w:38%">Amargor</span>
-          <span style="--w:80%">Sabor</span>
-        </div>
+      <div class="hero-photo">
+        <img src="images/botella.jpg" alt="Botella de cerveza artesanal">
       </div>
     </div>
   </section>
 
-  <!-- CATALOGO -->
   <section class="catalog" id="catalogo">
     <div class="wrap">
-      <p class="eyebrow">Columna A · Catálogo</p>
-      <h2>Elige tu cerveza</h2>
-      <p class="section-sub">Lotes pequeños, fermentación lenta y sin pasteurizar. Disponibles en lata y botella según el estilo.</p>
+      <p class="eyebrow">Catálogo</p>
+      <h2>Nuestras bebidas</h2>
+      <p class="section-sub">Todo el lote se embotella y despacha fresco. Precio por botella individual.</p>
       <div class="grid" id="product-grid"></div>
     </div>
   </section>
 
-  <!-- COMO FUNCIONA -->
-  <section class="how" id="como-funciona">
+  <section class="how how-bg" id="como-funciona">
+    <div class="how-overlay"></div>
     <div class="wrap">
-      <p class="eyebrow">Columna B · Proceso</p>
-      <h2>De tu pedido a tu mesa</h2>
+      <p class="eyebrow">Proceso</p>
+      <h2>De tu pedido a tu puerta</h2>
       <div class="how-grid">
         <div class="how-step">
           <span class="rn">1</span>
           <h3>Eliges y pagas</h3>
-          <p>Tarjeta de crédito, débito o transferencia por Mercado Pago — sin registrarte.</p>
+          <p>Tarjeta de crédito, débito, transferencia u otros medios habilitados en Mercado Pago.</p>
         </div>
         <div class="how-step">
           <span class="rn">2</span>
           <h3>Confirmamos tu pedido</h3>
-          <p>Te llega un correo al aprobarse el pago y nos contactamos para coordinar.</p>
+          <p>Recibes un correo de confirmación apenas se aprueba el pago, con el detalle de tu compra.</p>
         </div>
         <div class="how-step">
           <span class="rn">3</span>
-          <h3>Entrega o retiro</h3>
-          <p>Acordamos el despacho a tu comuna o el retiro directo en el brewpub.</p>
+          <h3>Preparamos y despachamos</h3>
+          <p>Embotellamos y coordinamos el envío o retiro en un plazo de 2 a 4 días hábiles.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FAQ -->
   <section class="faq" id="faq">
     <div class="wrap">
-      <p class="eyebrow">Columna C · Detalles</p>
+      <p class="eyebrow">Detalles</p>
       <h2>Preguntas frecuentes</h2>
       <details>
-        <summary>¿En qué presentaciones venden?</summary>
-        <p>Lata 473 ml y botella 330 ml, según el estilo. Cada ficha indica la presentación disponible.</p>
+        <summary>¿Puedo comprar si soy menor de edad?</summary>
+        <p>No. La venta de alcohol a menores de 18 años está prohibida por ley. Nos reservamos el derecho de solicitar verificación de identidad al momento de la entrega.</p>
       </details>
       <details>
-        <summary>¿Hacen delivery?</summary>
-        <p>Sí. Coordinamos el despacho por comuna tras confirmar tu pedido. También puedes retirar directo en el brewpub sin costo.</p>
+        <summary>¿Cuánto demora el despacho?</summary>
+        <p>Entre 2 y 4 días hábiles desde que se aprueba el pago, dependiendo de la comuna.</p>
       </details>
       <details>
         <summary>¿Qué medios de pago aceptan?</summary>
-        <p>Tarjetas de crédito y débito, transferencia bancaria y otros medios disponibles en Mercado Pago.</p>
+        <p>Tarjetas de crédito y débito, transferencia bancaria y otros medios disponibles en la pasarela de pago.</p>
       </details>
       <details>
-        <summary>¿Cuál es la política de devoluciones?</summary>
-        <p>Al ser un producto perecible, solo se aceptan cambios por productos en mal estado, siempre que se reporte el mismo día de la entrega.</p>
+        <summary>¿Hay devoluciones?</summary>
+        <p>Si tu pedido llega dañado o incompleto, escríbenos dentro de las 48 horas siguientes a la entrega y lo resolvemos.</p>
       </details>
     </div>
   </section>
 
 </main>
 
+<section class="legal-notice">
+  <div class="wrap">
+    <p>El consumo de alcohol está prohibido para menores de 18 años. La ley prohíbe la venta de alcohol a menores de edad. Bebe con moderación. Este sitio no vende ni despacha a personas en estado de ebriedad manifiesta.</p>
+  </div>
+</section>
+
 <footer class="footer">
   <div class="wrap footer-inner">
-    <span>Barril y Miel — cerveza artesanal</span>
+    <span>Barril &amp; Miel — bebidas artesanales</span>
     <a href="mailto:contacto@tudominio.cl">contacto@tudominio.cl</a>
   </div>
 </footer>
@@ -141,8 +146,31 @@
       <span>Total</span>
       <span id="cart-total-amount">$0</span>
     </div>
-    <button class="btn btn-primary btn-full" id="checkout-btn" disabled>Pagar ahora</button>
-    <p class="cart-note" id="checkout-note"></p>
+
+    <form class="checkout-form" id="checkout-form">
+      <label for="ck-name">Nombre completo</label>
+      <input type="text" id="ck-name" required>
+
+      <label for="ck-email">Correo</label>
+      <input type="email" id="ck-email" required>
+
+      <label for="ck-phone">Teléfono</label>
+      <input type="tel" id="ck-phone" required placeholder="+56 9 ...">
+
+      <label for="ck-address">Dirección de despacho</label>
+      <input type="text" id="ck-address" required placeholder="Calle, número, depto/casa">
+
+      <label for="ck-comuna">Comuna</label>
+      <input type="text" id="ck-comuna" required>
+
+      <label class="age-confirm">
+        <input type="checkbox" id="ck-age" required>
+        Declaro ser mayor de 18 años y acepto recibir esta compra bajo esa condición.
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-full" id="checkout-btn" disabled style="margin-top:8px;">Pagar ahora</button>
+      <p class="cart-note" id="checkout-note"></p>
+    </form>
   </div>
 </aside>
 <div class="cart-overlay" id="cart-overlay"></div>
@@ -150,4 +178,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-

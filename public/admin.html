@@ -3,42 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Barril y Miel</title>
+<title>Admin — Barril & Miel</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
-  .admin-wrap{max-width:920px;margin:0 auto;padding:48px 24px 100px;}
+  .admin-wrap{max-width:960px;margin:0 auto;padding:48px 24px 100px;}
   .admin-login{max-width:340px;margin:120px auto;background:var(--paper);color:var(--ink);padding:32px;border-radius:var(--radius);}
   .admin-login h1{font-size:22px;margin-bottom:6px;}
   .admin-login p{color:var(--ink-soft);font-size:13px;margin-bottom:20px;}
   .field{margin-bottom:14px;}
   .field label{display:block;font-size:12px;font-family:var(--mono);margin-bottom:6px;color:var(--ink-soft);}
-  .field input{width:100%;padding:10px 12px;border:1px solid rgba(28,43,36,0.2);border-radius:var(--radius);font-family:var(--sans);font-size:14px;}
-  .admin-error{color:var(--rust);font-size:13px;margin-top:10px;}
+  .field input{width:100%;padding:10px 12px;border:1px solid rgba(43,27,18,0.2);border-radius:var(--radius);font-family:var(--sans);font-size:14px;}
+  .admin-error{color:#A8432F;font-size:13px;margin-top:10px;}
   .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;}
   .admin-header h1{font-size:26px;}
   .logout-btn{background:none;border:1px solid var(--line-soft);color:var(--paper);padding:8px 14px;border-radius:var(--radius);cursor:pointer;font-size:13px;}
-  .kv-warning{background:rgba(201,162,75,0.14);border:1px solid var(--brass);color:var(--paper);padding:14px 16px;border-radius:var(--radius);font-size:13px;margin-bottom:28px;}
+  .kv-warning{background:rgba(201,122,61,0.14);border:1px solid var(--copper);color:var(--paper);padding:14px 16px;border-radius:var(--radius);font-size:13px;margin-bottom:28px;}
   .panel{background:var(--paper);color:var(--ink);border-radius:var(--radius);padding:24px;margin-bottom:28px;}
   .panel h2{font-size:17px;margin-bottom:16px;}
   table{width:100%;border-collapse:collapse;font-size:13px;}
-  th{text-align:left;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--ink-soft);padding:8px 6px;border-bottom:1px solid rgba(28,43,36,0.15);}
-  td{padding:10px 6px;border-bottom:1px solid rgba(28,43,36,0.08);}
+  th{text-align:left;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--ink-soft);padding:8px 6px;border-bottom:1px solid rgba(43,27,18,0.15);}
+  td{padding:10px 6px;border-bottom:1px solid rgba(43,27,18,0.08);vertical-align:top;}
   .row-actions button{background:none;border:none;cursor:pointer;font-size:12px;text-decoration:underline;margin-right:10px;}
   .edit-btn{color:var(--ink);}
-  .del-btn{color:var(--rust);}
+  .del-btn{color:#A8432F;}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   .form-grid .full{grid-column:1 / -1;}
   .status-approved{color:#2F6B4F;font-weight:600;}
-  .status-pending{color:var(--brass);font-weight:600;}
-  .status-rejected{color:var(--rust);font-weight:600;}
+  .status-pending{color:var(--copper);font-weight:600;}
+  .status-rejected{color:#A8432F;font-weight:600;}
 </style>
 </head>
 <body>
 
 <div id="login-view" class="admin-login">
   <h1>Panel admin</h1>
-  <p>Barril y Miel — acceso privado</p>
+  <p>Barril &amp; Miel — acceso privado</p>
   <div class="field">
     <label>Usuario</label>
     <input type="text" id="login-user" autocomplete="username">
@@ -53,31 +53,26 @@
 
 <div id="admin-view" class="admin-wrap" style="display:none;">
   <div class="admin-header">
-    <h1>Panel admin — Barril y Miel</h1>
+    <h1>Panel admin — Barril &amp; Miel</h1>
     <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
   </div>
 
   <div class="kv-warning" id="kv-warning" style="display:none;">
     <strong id="kv-status-title">Catálogo en modo solo lectura</strong>
     <p id="kv-status-detail" style="margin:6px 0 12px;">Conecta Upstash (Redis gratis) para poder guardar cambios desde aquí.</p>
-    <ol style="margin:0 0 12px 18px; font-size:13px; line-height:1.7;">
-      <li>Crea una cuenta gratis en <a href="https://upstash.com" target="_blank" style="color:var(--brass-bright);">upstash.com</a></li>
-      <li>Crea una base de datos Redis (plan gratuito, un clic)</li>
-      <li>En su panel, copia <code>UPSTASH_REDIS_REST_URL</code> y <code>UPSTASH_REDIS_REST_TOKEN</code></li>
-      <li>Pégalas en Vercel → tu proyecto → Settings → Environment Variables, con esos mismos nombres, y vuelve a hacer deploy</li>
-    </ol>
     <button class="btn btn-ghost" id="recheck-kv" type="button">Volver a comprobar</button>
   </div>
 
   <div class="panel">
-    <h2>Agregar / editar cerveza</h2>
+    <h2>Agregar / editar bebida</h2>
     <form id="product-form" class="form-grid">
       <div class="field"><label>ID único (sin espacios)</label><input type="text" id="p-id" required></div>
       <div class="field"><label>Nombre</label><input type="text" id="p-name" required></div>
-      <div class="field"><label>Presentación</label><input type="text" id="p-format" placeholder="Lata 473 ml / Botella 330 ml" required></div>
+      <div class="field"><label>Estilo</label><input type="text" id="p-style" placeholder="American IPA, Hidromiel seco..." required></div>
+      <div class="field"><label>Graduación alcohólica</label><input type="text" id="p-abv" placeholder="5.4% alc/vol"></div>
+      <div class="field"><label>Volumen</label><input type="text" id="p-volume" placeholder="500 ml" required></div>
       <div class="field"><label>Precio (CLP)</label><input type="number" id="p-price" required></div>
       <div class="field full"><label>Descripción corta</label><input type="text" id="p-tagline"></div>
-      <div class="field full"><label>Imagen en /public/plantillas</label><input type="text" id="p-file" required></div>
       <div class="full" style="display:flex;gap:10px;">
         <button type="submit" class="btn btn-primary">Guardar</button>
         <button type="button" class="btn btn-ghost" id="cancel-edit" style="display:none;">Cancelar edición</button>
@@ -88,15 +83,15 @@
   <div class="panel">
     <h2>Catálogo actual</h2>
     <table>
-      <thead><tr><th>Nombre</th><th>Presentación</th><th>Precio</th><th>Imagen</th><th></th></tr></thead>
+      <thead><tr><th>Nombre</th><th>Estilo</th><th>Volumen</th><th>Precio</th><th></th></tr></thead>
       <tbody id="product-table"></tbody>
     </table>
   </div>
 
   <div class="panel">
-    <h2>Ventas recientes (Mercado Pago)</h2>
+    <h2>Pedidos recientes (para preparar despacho)</h2>
     <table>
-      <thead><tr><th>Fecha</th><th>Correo</th><th>Monto</th><th>Estado</th></tr></thead>
+      <thead><tr><th>Fecha</th><th>Cliente</th><th>Contacto</th><th>Dirección</th><th>Monto</th><th>Estado</th></tr></thead>
       <tbody id="orders-table"></tbody>
     </table>
   </div>

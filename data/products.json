@@ -1,59 +1,38 @@
 [
   {
+    "id": "ale-ambar",
+    "name": "Ale Ámbar Artesanal",
+    "style": "American Amber Ale",
+    "abv": "5.4% alc/vol",
+    "volume": "500 ml",
+    "price": 3990,
+    "tagline": "Maltosa y con notas a caramelo, lúpulo justo para no tapar el cuerpo."
+  },
+  {
     "id": "lager-clasica",
     "name": "Lager Clásica",
-    "format": "Lata 473 ml",
-    "price": 3500,
-    "tagline": "Suave, refrescante y fácil de tomar. La favorita para cualquier ocasión.",
-    "file": "lager-clasica.jpg"
+    "style": "Pilsner Lager",
+    "abv": "4.8% alc/vol",
+    "volume": "500 ml",
+    "price": 3490,
+    "tagline": "Liviana, dorada y crocante. La de siempre, hecha con calma."
   },
   {
-    "id": "ipa-resina",
-    "name": "IPA Resina",
-    "format": "Botella 330 ml",
-    "price": 4500,
-    "tagline": "Amarga y aromática, con notas cítricas y un final seco que pide otra.",
-    "file": "ipa-resina.jpg"
+    "id": "ipa-lupulada",
+    "name": "IPA Lupulada",
+    "style": "American IPA",
+    "abv": "6.2% alc/vol",
+    "volume": "500 ml",
+    "price": 4490,
+    "tagline": "Cítrica y resinosa, para quienes buscan el golpe de lúpulo."
   },
   {
-    "id": "golden-abela",
-    "name": "Golden Ámbar",
-    "format": "Lata 473 ml",
-    "price": 3800,
-    "tagline": "Cuerpo medio y caramelo suave. Perfecta para acompañar comidas.",
-    "file": "golden-abela.jpg"
-  },
-  {
-    "id": "stout-toastada",
-    "name": "Stout Tostada",
-    "format": "Botella 330 ml",
-    "price": 4800,
-    "tagline": "Notas a café y chocolate, cremosa y robusta. Para paladares intensos.",
-    "file": "stout-toastada.jpg"
-  },
-  {
-    "id": "porter-miel",
-    "name": "Porter Miel",
-    "format": "Botella 330 ml",
-    "price": 5000,
-    "tagline": "Nuestra firma: miel local y malta tostada en perfecto equilibrio.",
-    "file": "porter-miel.jpg"
-  },
-  {
-    "id": "wheat-citrica",
-    "name": "Wheat Cítrica",
-    "format": "Lata 473 ml",
-    "price": 3900,
-    "tagline": "Trigo y naranja, ligera y turbia. La mejor aliada para el verano.",
-    "file": "wheat-citrica.jpg"
-  },
-  {
-    "id": "radler-limon",
-    "name": "Radler Limón",
-    "format": "Lata 473 ml",
-    "price": 3200,
-    "tagline": "Refrescante mezcla de cerveza y limón, baja en alcohol. Ideal para el calor.",
-    "file": "radler-limon.jpg"
+    "id": "hidromiel-tradicional",
+    "name": "Hidromiel Tradicional",
+    "style": "Hidromiel seco",
+    "abv": "10% alc/vol",
+    "volume": "375 ml",
+    "price": 6990,
+    "tagline": "Fermentada con miel pura, sin especias. El sabor de la miel, sin más."
   }
 ]
-

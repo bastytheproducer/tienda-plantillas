@@ -1,0 +1,7 @@
+Sube aquí tus 3 fotos generadas en Gemini, con estos nombres exactos:
+
+  hero.jpg       -> la foto de la mesa con botellas (fondo del hero)
+  botella.jpg    -> la foto de la botella sola (tarjeta junto al título)
+  ambiente.jpg   -> la foto del interior con barriles (fondo de "Cómo funciona")
+
+Si les pones otro nombre, edita esas 3 referencias en public/styles.css e index.html.

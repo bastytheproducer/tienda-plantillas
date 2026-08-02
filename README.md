@@ -1,76 +1,75 @@
-# Barril y Miel — Tienda de cerveza artesanal
+# Barril & Miel — Tienda de cerveza artesanal e hidromiel
 
-Tienda online completa: catálogo de cervezas, carrito, checkout con Mercado Pago
-(acepta tarjetas, transferencia y otros medios) y confirmación automática de
-pedidos por correo. Sin servidor propio, sin costo fijo mientras no haya ventas.
+Sitio completo: catálogo, carrito, checkout con Mercado Pago (tarjetas,
+transferencia y otros medios) y aviso automático por correo cuando se
+aprueba un pago — a ti para preparar el despacho, y al cliente para
+confirmar su pedido.
+
+## ⚠️ Antes de vender de verdad
+
+Vender alcohol en Chile está regulado. Esto no es asesoría legal, pero
+necesitas tener resuelto, como mínimo:
+
+- **Patente de alcoholes** con la municipalidad correspondiente.
+- **Inicio de actividades en el SII** que cubra la venta de bebidas
+  alcohólicas.
+- Cumplir la **Ley de Alcoholes**, que limita fuertemente la publicidad de
+  alcohol (redes sociales, Google Ads, etc.) y exige no vender a menores de
+  edad ni a personas en evidente estado de ebriedad.
+- Revisar las reglas de despacho (algunas comunas exigen verificar edad al
+  momento de la entrega).
+
+El sitio ya incluye un aviso de verificación de edad (18+) y una nota legal
+en el pie de página, pero eso no reemplaza tener los permisos correspondientes.
 
 ## Qué hace cada parte
 
-- `public/` — el sitio que ve la gente (catálogo, carrito, checkout).
-- `data/products.json` — tu catálogo de cervezas. Es la ÚNICA fuente de verdad
-  de precios; el navegador nunca decide el precio, siempre se valida en el
-  servidor.
-- `api/create-preference.js` — genera el pago en Mercado Pago cuando alguien
-  hace clic en "Pagar ahora".
-- `api/webhook.js` — Mercado Pago le avisa a esto cuando un pago se aprueba;
-  ahí se dispara la confirmación del pedido por correo.
-- `api/admin/*` — panel privado para ver ventas y gestionar el catálogo.
+- `public/` — el sitio (catálogo, carrito, checkout con formulario de despacho).
+- `data/products.json` — catálogo base (fuente de respaldo si Upstash no
+  está conectado).
+- `api/create-preference.js` — genera el pago en Mercado Pago, guarda los
+  datos de despacho en la preferencia.
+- `api/webhook.js` — cuando Mercado Pago aprueba un pago, manda un correo
+  de confirmación al comprador y un aviso con los datos de despacho a
+  `STORE_NOTIFY_EMAIL` (tú), para que prepares el pedido.
+- `api/admin/*` — panel de administración: catálogo y pedidos recientes.
 
-## Paso 1 — Cuenta de Mercado Pago (gratis)
+A diferencia de un producto digital, aquí **no hay descarga ni entrega
+automática del producto** — el despacho físico lo preparas y coordinas tú
+después de recibir el aviso por correo.
 
-1. Crea una cuenta en https://www.mercadopago.cl si no tienes una, a tu nombre.
-2. Entra a https://www.mercadopago.cl/developers/panel → crea una aplicación.
-3. Copia el **Access Token de producción** (no el de pruebas). Ese token va en
-   la variable `MP_ACCESS_TOKEN`.
-4. Asocia la cuenta bancaria donde quieres recibir los pagos. Los retiros se
-   hacen desde Mercado Pago directamente.
+## Paso 1 — Mercado Pago
 
-## Paso 2 — Envío de correos automáticos (Resend, gratis para partir)
+Ya deberías tener esto configurado de cuando armamos la primera versión del
+sitio (Access Token de producción). Si no, en tu cuenta de Mercado Pago →
+Developers → tu aplicación → Credenciales de producción.
 
-1. Crea una cuenta en https://resend.com
-2. Verifica un dominio propio o usa el dominio de prueba mientras consigues uno.
-3. Copia tu API key → variable `RESEND_API_KEY`.
-4. Define `FROM_EMAIL` con el correo remitente que verificaste.
+## Paso 2 — Correos automáticos (Resend)
 
-## Paso 3 — Agrega tus cervezas y fotos
+Igual que antes: cuenta en resend.com, API key, y esta vez además define
+`STORE_NOTIFY_EMAIL` con tu correo real — ahí te van a llegar los pedidos
+pagados con la dirección de despacho.
 
-El catálogo vive en `data/products.json`. Cada cerveza tiene `id`, `name`,
-`format` (ej: "Lata 473 ml", "Botella 330 ml"), `price` en CLP, `tagline` con
-notas de sabor y `file` con la imagen que se muestra en la tienda.
+## Paso 3 — Panel admin
 
-## Paso 4 — Publicar el sitio (Vercel, gratis)
+`ADMIN_USER`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` — igual que antes.
+Desde `/admin` puedes:
 
-1. Crea una cuenta en https://vercel.com (puedes entrar con GitHub).
-2. Sube esta carpeta a un repositorio de GitHub.
-3. En Vercel: "Add New Project" → importa ese repositorio.
-4. En "Environment Variables" carga las variables de `.env.example` con tus
-   valores reales.
-5. Deploy. Vercel te da una URL gratis (`tu-proyecto.vercel.app`) — actualiza
-   `SITE_URL` con esa URL exacta y vuelve a hacer deploy (Redeploy).
-6. En el panel de Mercado Pago → Notificaciones/Webhooks, confirma que la URL
-   `https://tu-proyecto.vercel.app/api/webhook` esté recibiendo eventos de pago.
+- Agregar, editar o eliminar bebidas del catálogo (nombre, estilo, ABV,
+  volumen, precio).
+- Ver los pedidos recientes con nombre, contacto, dirección y estado del
+  pago, para saber qué preparar y despachar.
 
-## Panel admin (`/admin`)
+Para que el catálogo se pueda editar de verdad (no solo ver), conecta
+Upstash Redis — mismos pasos que la primera vez (`UPSTASH_REDIS_REST_URL`,
+`UPSTASH_REDIS_REST_TOKEN`).
 
-Acceso privado para revisar ventas y gestionar el catálogo sin tocar código.
-Configura `ADMIN_USER` y `ADMIN_PASSWORD` en las variables de entorno, más
-`ADMIN_SESSION_SECRET` (genera uno con `openssl rand -hex 32`).
+## Cómo agregar una bebida nueva
 
-Para guardar cambios del catálogo desde el admin necesitas conectar una base
-gratis de Upstash Redis (`UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN`).
+Desde el panel admin (`/admin`), con Upstash conectado, o editando
+`data/products.json` directo en GitHub si todavía no conectas Upstash.
 
-## Cómo agregar una cerveza nueva
+## Variables de entorno
 
-1. Sube la foto del producto a `public/plantillas/`.
-2. Agrega un bloque nuevo en `data/products.json` con un `id` único.
-3. Vuelve a hacer deploy (o si conectaste GitHub a Vercel, con cada `git push`
-   se actualiza solo).
-
-## Qué NO incluye este sitio (y por qué)
-
-- No promete "dinero garantizado": ningún negocio real lo garantiza.
-- No guarda tus credenciales de Mercado Pago en ningún archivo de este proyecto.
-- No incluye publicidad ni tráfico: el sitio está listo para vender, pero
-  conseguir visitas (redes sociales, SEO, algo de pauta paga) sigue siendo
-  trabajo tuyo.
-
+Ver `.env.example` — se cargan todas en Vercel → Settings → Environment
+Variables, igual que en la versión anterior del sitio.

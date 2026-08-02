@@ -1,24 +1,31 @@
 const money = (n) => "$" + n.toLocaleString("es-CL");
 
 let PRODUCTS = [];
-
-// ---- Estado del carrito (persistido en localStorage del navegador) ----
 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
 }
-
 function addToCart(id) {
-  if (!cart.includes(id)) cart.push(id);
+  cart.push(id); // permite repetir (varias unidades del mismo producto)
+  saveCart();
+}
+function removeOneFromCart(id) {
+  const idx = cart.indexOf(id);
+  if (idx !== -1) cart.splice(idx, 1);
   saveCart();
 }
 
-function removeFromCart(id) {
-  cart = cart.filter((x) => x !== id);
-  saveCart();
+// ---- Age gate ----
+const ageGate = document.getElementById("age-gate");
+if (localStorage.getItem("age_confirmed") === "yes") {
+  ageGate.classList.add("hidden");
 }
+document.getElementById("age-yes").addEventListener("click", () => {
+  localStorage.setItem("age_confirmed", "yes");
+  ageGate.classList.add("hidden");
+});
 
 // ---- Render catálogo ----
 function renderProducts() {
@@ -26,8 +33,9 @@ function renderProducts() {
   grid.innerHTML = PRODUCTS.map(
     (p) => `
     <article class="card">
-      <span class="card-format">${p.format}</span>
+      <span class="card-style">${p.style} · ${p.volume}</span>
       <h3>${p.name}</h3>
+      <span class="card-abv">${p.abv}</span>
       <p class="card-tagline">${p.tagline}</p>
       <div class="card-foot">
         <span class="card-price">${money(p.price)}</span>
@@ -44,12 +52,12 @@ function renderProducts() {
       setTimeout(() => {
         btn.textContent = "Agregar";
         btn.classList.remove("added");
-      }, 1200);
+      }, 1000);
     });
   });
 }
 
-// ---- Render carrito ----
+// ---- Render carrito (agrupado por cantidad) ----
 function renderCart() {
   const itemsEl = document.getElementById("cart-items");
   const countEl = document.getElementById("cart-count");
@@ -65,34 +73,38 @@ function renderCart() {
     return;
   }
 
-  const items = cart.map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean);
-  const total = items.reduce((sum, p) => sum + p.price, 0);
+  const counts = {};
+  cart.forEach((id) => (counts[id] = (counts[id] || 0) + 1));
 
-  itemsEl.innerHTML = items
-    .map(
-      (p) => `
+  const rows = Object.entries(counts).map(([id, qty]) => {
+    const p = PRODUCTS.find((x) => x.id === id);
+    if (!p) return "";
+    return `
     <div class="cart-item">
       <div>
-        <div class="cart-item-name">${p.name}</div>
-        <div class="cart-item-meta">${p.format} · ${money(p.price)}</div>
+        <div class="cart-item-name">${p.name} ${qty > 1 ? `× ${qty}` : ""}</div>
+        <div class="cart-item-meta">${p.volume} · ${money(p.price)} c/u</div>
       </div>
-      <button class="cart-item-remove" data-id="${p.id}">Quitar</button>
-    </div>`
-    )
-    .join("");
+      <button class="cart-item-remove" data-id="${id}">Quitar 1</button>
+    </div>`;
+  });
+  itemsEl.innerHTML = rows.join("");
 
   itemsEl.querySelectorAll(".cart-item-remove").forEach((btn) => {
-    btn.addEventListener("click", () => removeFromCart(btn.dataset.id));
+    btn.addEventListener("click", () => removeOneFromCart(btn.dataset.id));
   });
 
+  const total = cart.reduce((sum, id) => {
+    const p = PRODUCTS.find((x) => x.id === id);
+    return sum + (p ? p.price : 0);
+  }, 0);
   totalEl.textContent = money(total);
   checkoutBtn.disabled = false;
 }
 
-// ---- Drawer del carrito ----
+// ---- Drawer ----
 const drawer = document.getElementById("cart-drawer");
 const overlay = document.getElementById("cart-overlay");
-
 function openCart() {
   drawer.classList.add("open");
   overlay.classList.add("open");
@@ -101,21 +113,31 @@ function closeCart() {
   drawer.classList.remove("open");
   overlay.classList.remove("open");
 }
-
 document.getElementById("cart-toggle").addEventListener("click", openCart);
 document.getElementById("cart-close").addEventListener("click", closeCart);
 overlay.addEventListener("click", closeCart);
 
-// ---- Checkout: pide email y crea la preferencia de pago en el backend ----
-document.getElementById("checkout-btn").addEventListener("click", async () => {
+// ---- Checkout ----
+document.getElementById("checkout-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
   const note = document.getElementById("checkout-note");
-  const email = prompt("Ingresa tu correo para coordinar la entrega tras el pago:");
-  if (!email || !email.includes("@")) {
-    note.textContent = "Necesitamos un correo válido para coordinar tu pedido.";
+  const btn = document.getElementById("checkout-btn");
+
+  const payload = {
+    productIds: cart,
+    name: document.getElementById("ck-name").value,
+    email: document.getElementById("ck-email").value,
+    phone: document.getElementById("ck-phone").value,
+    address: document.getElementById("ck-address").value,
+    comuna: document.getElementById("ck-comuna").value,
+    ageConfirmed: document.getElementById("ck-age").checked,
+  };
+
+  if (!payload.ageConfirmed) {
+    note.textContent = "Debes confirmar que eres mayor de 18 años para continuar.";
     return;
   }
 
-  const btn = document.getElementById("checkout-btn");
   btn.disabled = true;
   btn.textContent = "Generando pago...";
 
@@ -123,12 +145,10 @@ document.getElementById("checkout-btn").addEventListener("click", async () => {
     const res = await fetch("/api/create-preference", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productIds: cart, email }),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error("No se pudo generar el pago");
     const data = await res.json();
-    // Redirige a Mercado Pago (Checkout Pro): ahí el comprador elige
-    // tarjeta, transferencia u otro medio disponible.
     window.location.href = data.init_point;
   } catch (err) {
     note.textContent = "Hubo un problema generando el pago. Intenta de nuevo en unos segundos.";
