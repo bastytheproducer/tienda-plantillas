@@ -8,6 +8,8 @@
 // Variables de entorno adicionales usadas aquí:
 //   RESEND_API_KEY, FROM_EMAIL   -> igual que antes
 //   STORE_NOTIFY_EMAIL           -> tu correo, donde llegan los pedidos a preparar
+//   CALLMEBOT_PHONE / CALLMEBOT_APIKEY      -> WhatsApp del dueño (CallMeBot)
+//   CALLMEBOT_PHONE_2 / CALLMEBOT_APIKEY_2  -> WhatsApp secundario (opcional)
 
 const { MercadoPagoConfig, Payment } = require("mercadopago");
 const { Resend } = require("resend");
@@ -72,22 +74,30 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Aviso por WhatsApp a la tienda (gratis, vía CallMeBot)
-    if (process.env.CALLMEBOT_PHONE && process.env.CALLMEBOT_APIKEY) {
-      const itemsText = items.map((i) => `${i.quantity}x ${i.title}`).join(", ");
-      const waMessage =
-        `🍺 Nuevo pedido pagado\n` +
-        `Cliente: ${meta.name || ""} (${meta.phone || ""})\n` +
-        `Pedido: ${itemsText}\n` +
-        `Total: $${Number(payment.transaction_amount).toLocaleString("es-CL")}\n` +
-        `Dirección: ${meta.address || ""}, ${meta.comuna || ""}\n` +
-        `Waze: ${wazeLink}`;
+    // Aviso por WhatsApp a la tienda (gratis, vía CallMeBot).
+    // Soporta hasta 2 números: CALLMEBOT_PHONE/APIKEY y opcionalmente
+    // CALLMEBOT_PHONE_2/APIKEY_2 para un segundo destinatario.
+    const itemsText = items.map((i) => `${i.quantity}x ${i.title}`).join(", ");
+    const waMessage =
+      `🍺 Nuevo pedido pagado\n` +
+      `Cliente: ${meta.name || ""} (${meta.phone || ""})\n` +
+      `Pedido: ${itemsText}\n` +
+      `Total: $${Number(payment.transaction_amount).toLocaleString("es-CL")}\n` +
+      `Dirección: ${meta.address || ""}, ${meta.comuna || ""}\n` +
+      `Waze: ${wazeLink}`;
 
+    const waTargets = [
+      { phone: process.env.CALLMEBOT_PHONE, apikey: process.env.CALLMEBOT_APIKEY },
+      { phone: process.env.CALLMEBOT_PHONE_2, apikey: process.env.CALLMEBOT_APIKEY_2 },
+    ];
+
+    for (const target of waTargets) {
+      if (!target.phone || !target.apikey) continue;
       try {
         await fetch(
-          `https://api.callmebot.com/whatsapp.php?phone=${process.env.CALLMEBOT_PHONE}&text=${encodeURIComponent(
+          `https://api.callmebot.com/whatsapp.php?phone=${target.phone}&text=${encodeURIComponent(
             waMessage
-          )}&apikey=${process.env.CALLMEBOT_APIKEY}`
+          )}&apikey=${target.apikey}`
         );
       } catch (waErr) {
         console.error("callmebot error:", waErr);

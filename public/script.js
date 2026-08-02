@@ -120,6 +120,7 @@ overlay.addEventListener("click", closeCart);
 // ---- Autocompletado de comunas de Chile ----
 const comunaInput = document.getElementById("ck-comuna");
 const comunaSuggestions = document.getElementById("comuna-suggestions");
+let activeSuggestionIndex = -1;
 
 function normalizeStr(s) {
   return (s || "")
@@ -128,23 +129,40 @@ function normalizeStr(s) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-comunaInput.addEventListener("input", () => {
-  const q = normalizeStr(comunaInput.value.trim());
-  if (q.length < 2) {
-    comunaSuggestions.innerHTML = "";
-    comunaSuggestions.classList.remove("open");
-    return;
-  }
-  const matches = COMUNAS_CHILE.filter(
-    (c) => normalizeStr(c.n).includes(q) || normalizeStr(c.r).includes(q)
-  ).slice(0, 8);
+function getSuggestionItems() {
+  return Array.from(comunaSuggestions.querySelectorAll(".comuna-suggestion"));
+}
 
-  if (matches.length === 0) {
-    comunaSuggestions.innerHTML = "";
-    comunaSuggestions.classList.remove("open");
-    return;
+function updateActiveSuggestion() {
+  const items = getSuggestionItems();
+  items.forEach((el, i) => {
+    el.classList.toggle("active", i === activeSuggestionIndex);
+  });
+  const active = items[activeSuggestionIndex];
+  if (active && active.scrollIntoView) {
+    active.scrollIntoView({ block: "nearest" });
   }
+}
 
+function selectSuggestion(el) {
+  const lat = parseFloat(el.dataset.lat);
+  const lng = parseFloat(el.dataset.lng);
+  const name = el.querySelector(".cs-name").textContent;
+  comunaInput.value = name;
+  comunaSuggestions.innerHTML = "";
+  comunaSuggestions.classList.remove("open");
+  activeSuggestionIndex = -1;
+
+  // Mueve el mapa a la comuna seleccionada
+  initDeliveryMap();
+  if (deliveryMap) {
+    deliveryMap.setView([lat, lng], 14);
+    placeMarker(lat, lng);
+  }
+  document.getElementById("ck-address").focus();
+}
+
+function renderComunaSuggestions(matches) {
   comunaSuggestions.innerHTML = matches
     .map(
       (c) => `
@@ -155,25 +173,64 @@ comunaInput.addEventListener("input", () => {
     )
     .join("");
   comunaSuggestions.classList.add("open");
+  activeSuggestionIndex = 0;
 
-  comunaSuggestions.querySelectorAll(".comuna-suggestion").forEach((el) => {
-    el.addEventListener("click", () => {
-      const lat = parseFloat(el.dataset.lat);
-      const lng = parseFloat(el.dataset.lng);
-      const name = el.querySelector(".cs-name").textContent;
-      comunaInput.value = name;
-      comunaSuggestions.innerHTML = "";
-      comunaSuggestions.classList.remove("open");
-
-      // Mueve el mapa a la comuna seleccionada
-      initDeliveryMap();
-      if (deliveryMap) {
-        deliveryMap.setView([lat, lng], 14);
-        placeMarker(lat, lng);
-      }
-      document.getElementById("ck-address").focus();
-    });
+  getSuggestionItems().forEach((el) => {
+    el.addEventListener("click", () => selectSuggestion(el));
   });
+  updateActiveSuggestion();
+}
+
+function searchComunas(q) {
+  if (q.length < 2) {
+    comunaSuggestions.innerHTML = "";
+    comunaSuggestions.classList.remove("open");
+    activeSuggestionIndex = -1;
+    return;
+  }
+  const matches = COMUNAS_CHILE.filter(
+    (c) => normalizeStr(c.n).includes(q) || normalizeStr(c.r).includes(q)
+  ).slice(0, 8);
+
+  if (matches.length === 0) {
+    comunaSuggestions.innerHTML = "";
+    comunaSuggestions.classList.remove("open");
+    activeSuggestionIndex = -1;
+    return;
+  }
+  renderComunaSuggestions(matches);
+}
+
+comunaInput.addEventListener("input", () => {
+  searchComunas(normalizeStr(comunaInput.value.trim()));
+});
+
+// Navegación con teclado: flechas + Enter para seleccionar, Esc para cerrar
+comunaInput.addEventListener("keydown", (e) => {
+  const items = getSuggestionItems();
+  const isOpen = comunaSuggestions.classList.contains("open");
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    if (!isOpen || items.length === 0) return;
+    activeSuggestionIndex = (activeSuggestionIndex + 1) % items.length;
+    updateActiveSuggestion();
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    if (!isOpen || items.length === 0) return;
+    activeSuggestionIndex =
+      (activeSuggestionIndex - 1 + items.length) % items.length;
+    updateActiveSuggestion();
+  } else if (e.key === "Enter") {
+    if (isOpen && items.length > 0 && activeSuggestionIndex >= 0) {
+      e.preventDefault();
+      selectSuggestion(items[activeSuggestionIndex]);
+    }
+  } else if (e.key === "Escape") {
+    comunaSuggestions.innerHTML = "";
+    comunaSuggestions.classList.remove("open");
+    activeSuggestionIndex = -1;
+  }
 });
 
 // Cierra las sugerencias al hacer clic fuera
@@ -181,6 +238,7 @@ document.addEventListener("click", (e) => {
   if (!e.target.closest(".comuna-search")) {
     comunaSuggestions.innerHTML = "";
     comunaSuggestions.classList.remove("open");
+    activeSuggestionIndex = -1;
   }
 });
 

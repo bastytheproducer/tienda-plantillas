@@ -245,6 +245,7 @@ details p{margin-top:10px;color:var(--paper-dim);font-size:14px;max-width:60ch;}
 }
 .comuna-suggestion:last-of-type{border-bottom:none;}
 .comuna-suggestion:hover{background:#F4ECDD;}
+.comuna-suggestion.active{background:#E9DFC8;}
 .cs-name{font-size:13.5px;font-weight:600;color:var(--ink);}
 .cs-region{font-size:11px;color:var(--ink-soft);text-align:right;}
 .age-confirm{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--ink-soft);margin-top:4px;}

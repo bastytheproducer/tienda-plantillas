@@ -54,8 +54,21 @@ personal, pero necesitas activar tu número tú mismo:
 1. Agrega el número +34 644 66 12 92 a tus contactos (es el bot de CallMeBot).
 2. Mándale por WhatsApp el mensaje: `I allow callmebot to send me messages`
 3. Te va a responder con tu API key personal.
-4. En Vercel, agrega `CALLMEBOT_PHONE` (tu número sin el +, ej: 56940253455)
+4. En Vercel, agrega `CALLMEBOT_PHONE` (tu número sin el +, ej: 56933489427)
    y `CALLMEBOT_APIKEY` con la key que te dieron.
+
+### Recibir pedidos en un segundo número (opcional)
+
+Si quieres que los pedidos lleguen también a otro número, agrega en Vercel:
+`CALLMEBOT_PHONE_2` y `CALLMEBOT_APIKEY_2` (con la API key de ese segundo
+número, activada de la misma forma con CallMeBot). El webhook envía el aviso
+a los dos números.
+
+Para probar con el número actual +56933489427:
+1. Agrega el bot de CallMeBot a tus contactos.
+2. Mánde el mensaje de activación.
+3. En Vercel: `CALLMEBOT_PHONE=56933489427` y `CALLMEBOT_APIKEY=<tu key>`.
+4. Redeploy.
 
 Si no configuras esto, el sitio sigue funcionando normal — solo no manda el
 WhatsApp, y sigues recibiendo el correo a `STORE_NOTIFY_EMAIL` igual.
