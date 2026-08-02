@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Libro Mayor — Plantillas digitales de finanzas y productividad</title>
-<meta name="description" content="Plantillas de Excel, Google Sheets y Notion para presupuesto, control de gastos y ahorro. Descarga inmediata.">
+<title>Barril y Miel — Cerveza artesanal</title>
+<meta name="description" content="Cerveza artesanal de autor: IPA, Lager, Stout y más. Pide online y coordina tu entrega o retiro.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -14,8 +14,8 @@
 <header class="topbar">
   <div class="wrap topbar-inner">
     <a href="#top" class="brand">
-      <span class="brand-mark">≡</span>
-      <span class="brand-name">Libro Mayor</span>
+      <span class="brand-mark">🍺</span>
+      <span class="brand-name">Barril y Miel</span>
     </a>
     <nav class="topnav">
       <a href="#catalogo">Catálogo</a>
@@ -31,45 +31,31 @@
 
 <main id="top">
 
-  <!-- HERO: signature live-ledger grid -->
+  <!-- HERO -->
   <section class="hero">
     <div class="wrap hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow">Fila 1 · Columna A</p>
-        <h1>Tus cuentas,<br>en orden desde<br>la primera celda.</h1>
-        <p class="hero-sub">Plantillas de Excel, Google Sheets y Notion para presupuesto, control de gastos y metas de ahorro. Sin suscripciones, sin curvas de aprendizaje: abres el archivo y ya está funcionando.</p>
+        <p class="eyebrow">Lote 001 · Fermentando desde cero</p>
+        <h1>Cerveza artesanal,<br>con carácter<br>y miel local.</h1>
+        <p class="hero-sub">Estilos clásicos y de autor, elaborados en lotes pequeños con ingredientes chilenos. Pide online, paga con Mercado Pago y coordina la entrega o el retiro.</p>
         <div class="hero-cta">
-          <a href="#catalogo" class="btn btn-primary">Ver plantillas</a>
+          <a href="#catalogo" class="btn btn-primary">Ver cervezas</a>
           <a href="#como-funciona" class="btn btn-ghost">Cómo funciona</a>
         </div>
       </div>
-      <div class="hero-ledger" aria-hidden="true">
-        <div class="ledger-head">
-          <span></span><span>A</span><span>B</span><span>C</span>
+      <div class="hero-card" aria-hidden="true">
+        <div class="hero-card-badge">Nuestro lanzamiento</div>
+        <h3>Porter Miel</h3>
+        <p class="hero-card-note">Malta tostada + miel local de la quinta.</p>
+        <div class="hero-card-meta">
+          <span>Botella 330 ml</span>
+          <span>ABV 6,2%</span>
+          <span>IBU 28</span>
         </div>
-        <div class="ledger-row" style="--d:0">
-          <span class="rn">1</span>
-          <span class="cell" data-label="Ingresos">$820.000</span>
-          <span class="cell" data-label="Gastos">$540.000</span>
-          <span class="cell sum" data-label="Saldo">$280.000</span>
-        </div>
-        <div class="ledger-row" style="--d:1">
-          <span class="rn">2</span>
-          <span class="cell">Arriendo</span>
-          <span class="cell neg">-$310.000</span>
-          <span class="cell"></span>
-        </div>
-        <div class="ledger-row" style="--d:2">
-          <span class="rn">3</span>
-          <span class="cell">Ahorro meta</span>
-          <span class="cell pos">+$120.000</span>
-          <span class="cell"></span>
-        </div>
-        <div class="ledger-row highlight" style="--d:3">
-          <span class="rn">4</span>
-          <span class="cell">Total balanceado</span>
-          <span class="cell"></span>
-          <span class="cell sum tick">✓</span>
+        <div class="hero-card-bar">
+          <span style="--w:62%">Cuerpo</span>
+          <span style="--w:38%">Amargor</span>
+          <span style="--w:80%">Sabor</span>
         </div>
       </div>
     </div>
@@ -78,9 +64,9 @@
   <!-- CATALOGO -->
   <section class="catalog" id="catalogo">
     <div class="wrap">
-      <p class="eyebrow">Columna B · Catálogo</p>
-      <h2>Elige tu plantilla</h2>
-      <p class="section-sub">Archivo editable + guía de uso en video corto. Compatible con Excel, Google Sheets o Notion según el producto.</p>
+      <p class="eyebrow">Columna A · Catálogo</p>
+      <h2>Elige tu cerveza</h2>
+      <p class="section-sub">Lotes pequeños, fermentación lenta y sin pasteurizar. Disponibles en lata y botella según el estilo.</p>
       <div class="grid" id="product-grid"></div>
     </div>
   </section>
@@ -88,23 +74,23 @@
   <!-- COMO FUNCIONA -->
   <section class="how" id="como-funciona">
     <div class="wrap">
-      <p class="eyebrow">Columna C · Proceso</p>
-      <h2>De la compra a tu archivo, automático</h2>
+      <p class="eyebrow">Columna B · Proceso</p>
+      <h2>De tu pedido a tu mesa</h2>
       <div class="how-grid">
         <div class="how-step">
           <span class="rn">1</span>
           <h3>Eliges y pagas</h3>
-          <p>Tarjeta de crédito, débito, transferencia o efectivo en puntos de pago — el checkout acepta todos los medios habilitados en Chile.</p>
+          <p>Tarjeta de crédito, débito o transferencia por Mercado Pago — sin registrarte.</p>
         </div>
         <div class="how-step">
           <span class="rn">2</span>
-          <h3>Confirmación automática</h3>
-          <p>Al aprobarse el pago, el sistema arma tu enlace de descarga sin intervención manual.</p>
+          <h3>Confirmamos tu pedido</h3>
+          <p>Te llega un correo al aprobarse el pago y nos contactamos para coordinar.</p>
         </div>
         <div class="how-step">
           <span class="rn">3</span>
-          <h3>Recibes tu archivo</h3>
-          <p>Llega a tu correo en minutos, con la guía de uso incluida.</p>
+          <h3>Entrega o retiro</h3>
+          <p>Acordamos el despacho a tu comuna o el retiro directo en el brewpub.</p>
         </div>
       </div>
     </div>
@@ -113,19 +99,23 @@
   <!-- FAQ -->
   <section class="faq" id="faq">
     <div class="wrap">
-      <p class="eyebrow">Columna D · Detalles</p>
+      <p class="eyebrow">Columna C · Detalles</p>
       <h2>Preguntas frecuentes</h2>
       <details>
-        <summary>¿En qué formato llega la plantilla?</summary>
-        <p>Según el producto: archivo .xlsx editable, plantilla de Google Sheets (copia a tu Drive) o duplicado de Notion. Se indica en cada ficha.</p>
+        <summary>¿En qué presentaciones venden?</summary>
+        <p>Lata 473 ml y botella 330 ml, según el estilo. Cada ficha indica la presentación disponible.</p>
+      </details>
+      <details>
+        <summary>¿Hacen delivery?</summary>
+        <p>Sí. Coordinamos el despacho por comuna tras confirmar tu pedido. También puedes retirar directo en el brewpub sin costo.</p>
       </details>
       <details>
         <summary>¿Qué medios de pago aceptan?</summary>
-        <p>Tarjetas de crédito y débito, transferencia bancaria y otros medios disponibles en la pasarela de pago local.</p>
+        <p>Tarjetas de crédito y débito, transferencia bancaria y otros medios disponibles en Mercado Pago.</p>
       </details>
       <details>
-        <summary>¿Hay devoluciones?</summary>
-        <p>Por ser un producto digital de entrega inmediata, no hay devolución una vez descargado el archivo. Si el archivo llega dañado o no corresponde al comprado, se resuelve por correo.</p>
+        <summary>¿Cuál es la política de devoluciones?</summary>
+        <p>Al ser un producto perecible, solo se aceptan cambios por productos en mal estado, siempre que se reporte el mismo día de la entrega.</p>
       </details>
     </div>
   </section>
@@ -134,7 +124,7 @@
 
 <footer class="footer">
   <div class="wrap footer-inner">
-    <span>Libro Mayor — plantillas digitales</span>
+    <span>Barril y Miel — cerveza artesanal</span>
     <a href="mailto:contacto@tudominio.cl">contacto@tudominio.cl</a>
   </div>
 </footer>
@@ -160,3 +150,4 @@
 <script src="script.js"></script>
 </body>
 </html>
+

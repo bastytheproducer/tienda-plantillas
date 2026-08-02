@@ -109,9 +109,9 @@ overlay.addEventListener("click", closeCart);
 // ---- Checkout: pide email y crea la preferencia de pago en el backend ----
 document.getElementById("checkout-btn").addEventListener("click", async () => {
   const note = document.getElementById("checkout-note");
-  const email = prompt("Ingresa tu correo para recibir el archivo tras el pago:");
+  const email = prompt("Ingresa tu correo para coordinar la entrega tras el pago:");
   if (!email || !email.includes("@")) {
-    note.textContent = "Necesitamos un correo válido para enviarte el archivo.";
+    note.textContent = "Necesitamos un correo válido para coordinar tu pedido.";
     return;
   }
 

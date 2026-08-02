@@ -85,7 +85,7 @@ async function loadProducts() {
       <td>${money(p.price)}</td>
       <td>${p.file}</td>
       <td class="row-actions">
-        <a class="dl-btn" href="/api/admin/download?id=${p.id}" style="font-size:12px;text-decoration:underline;margin-right:10px;color:var(--ink);">Descargar</a>
+        <a class="dl-btn" href="/api/admin/download?id=${p.id}" style="font-size:12px;text-decoration:underline;margin-right:10px;color:var(--ink);">Imagen</a>
         <button class="edit-btn" data-id="${p.id}">Editar</button>
         <button class="del-btn" data-id="${p.id}">Eliminar</button>
       </td>
@@ -111,7 +111,7 @@ async function loadProducts() {
 
   tbody.querySelectorAll(".del-btn").forEach((btn) =>
     btn.addEventListener("click", async () => {
-      if (!confirm("¿Eliminar esta plantilla del catálogo?")) return;
+      if (!confirm("¿Eliminar esta cerveza del catálogo?")) return;
       await fetch(`/api/admin/products?id=${encodeURIComponent(btn.dataset.id)}`, { method: "DELETE" });
       loadProducts();
     })

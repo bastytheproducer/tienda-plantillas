@@ -12,7 +12,8 @@
 const { MercadoPagoConfig, Payment } = require("mercadopago");
 const { Resend } = require("resend");
 const { getProducts } = require("../lib/kv");
-const { makeDownloadToken } = require("../lib/sign");
+
+const money = (n) => "$" + Number(n).toLocaleString("es-CL");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(200).send("ok");
@@ -34,23 +35,37 @@ module.exports = async (req, res) => {
 
     const products = await getProducts();
     const items = productIds.map((id) => products.find((p) => p.id === id)).filter(Boolean);
-
-    const links = items.map((p) => {
-      const token = makeDownloadToken(p.id, email);
-      return `${process.env.SITE_URL}/api/download?token=${token}`;
-    });
+    const total = items.reduce((sum, p) => sum + p.price, 0);
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: process.env.FROM_EMAIL,
       to: email,
-      subject: "Tu plantilla está lista para descargar",
+      subject: "¡Pedido confirmado — Barril y Miel!",
       html: `
-        <p>Gracias por tu compra. Tus enlaces de descarga (válidos por 72 horas):</p>
-        <ul>
-          ${items.map((p, i) => `<li><a href="${links[i]}">${p.name}</a></li>`).join("")}
-        </ul>
-        <p>Si el enlace vence, responde este correo y se te reenvía.</p>
+        <p>¡Salud! Recibimos tu pago y tu pedido está confirmado.</p>
+        <h3>Detalle de tu pedido</h3>
+        <table style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;">
+          <thead>
+            <tr style="text-align:left;border-bottom:1px solid #ddd;">
+              <th style="padding:8px;">Cerveza</th>
+              <th style="padding:8px;">Presentación</th>
+              <th style="padding:8px;">Precio</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${items.map((p) => `
+              <tr style="border-bottom:1px solid #eee;">
+                <td style="padding:8px;">${p.name}</td>
+                <td style="padding:8px;">${p.format}</td>
+                <td style="padding:8px;">${money(p.price)}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+        <p style="font-size:16px;font-weight:bold;margin-top:16px;">Total: ${money(total)}</p>
+        <p>Pronto nos contactaremos al correo de este pedido para coordinar la entrega o el retiro de tus cervezas.</p>
+        <p>Si tienes dudas, responde este correo y te ayudamos.</p>
+        <p style="color:#888;font-size:12px;">Barril y Miel — Cerveza artesanal</p>
       `,
     });
 

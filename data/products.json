@@ -1,34 +1,59 @@
 [
   {
-    "id": "presupuesto-mensual",
-    "name": "Presupuesto mensual inteligente",
-    "format": "Excel / Google Sheets",
-    "price": 4990,
-    "tagline": "Ingresos, gastos fijos y variables con alertas automáticas de sobregiro.",
-    "file": "presupuesto-mensual.xlsx"
+    "id": "lager-clasica",
+    "name": "Lager Clásica",
+    "format": "Lata 473 ml",
+    "price": 3500,
+    "tagline": "Suave, refrescante y fácil de tomar. La favorita para cualquier ocasión.",
+    "file": "lager-clasica.jpg"
   },
   {
-    "id": "control-gastos-anual",
-    "name": "Control de gastos anual",
-    "format": "Excel",
-    "price": 6990,
-    "tagline": "Vista mes a mes con gráficos automáticos por categoría.",
-    "file": "control-gastos-anual.xlsx"
+    "id": "ipa-resina",
+    "name": "IPA Resina",
+    "format": "Botella 330 ml",
+    "price": 4500,
+    "tagline": "Amarga y aromática, con notas cítricas y un final seco que pide otra.",
+    "file": "ipa-resina.jpg"
   },
   {
-    "id": "meta-ahorro",
-    "name": "Calculadora de meta de ahorro",
-    "format": "Google Sheets",
-    "price": 3990,
-    "tagline": "Define una meta y calcula cuánto ahorrar cada semana para llegar a tiempo.",
-    "file": "meta-ahorro.xlsx"
+    "id": "golden-abela",
+    "name": "Golden Ámbar",
+    "format": "Lata 473 ml",
+    "price": 3800,
+    "tagline": "Cuerpo medio y caramelo suave. Perfecta para acompañar comidas.",
+    "file": "golden-abela.jpg"
   },
   {
-    "id": "planificador-notion",
-    "name": "Planificador financiero + académico",
-    "format": "Notion",
-    "price": 5990,
-    "tagline": "Presupuesto personal y seguimiento de ramos/entregas en un solo espacio.",
-    "file": "planificador-notion-link.txt"
+    "id": "stout-toastada",
+    "name": "Stout Tostada",
+    "format": "Botella 330 ml",
+    "price": 4800,
+    "tagline": "Notas a café y chocolate, cremosa y robusta. Para paladares intensos.",
+    "file": "stout-toastada.jpg"
+  },
+  {
+    "id": "porter-miel",
+    "name": "Porter Miel",
+    "format": "Botella 330 ml",
+    "price": 5000,
+    "tagline": "Nuestra firma: miel local y malta tostada en perfecto equilibrio.",
+    "file": "porter-miel.jpg"
+  },
+  {
+    "id": "wheat-citrica",
+    "name": "Wheat Cítrica",
+    "format": "Lata 473 ml",
+    "price": 3900,
+    "tagline": "Trigo y naranja, ligera y turbia. La mejor aliada para el verano.",
+    "file": "wheat-citrica.jpg"
+  },
+  {
+    "id": "radler-limon",
+    "name": "Radler Limón",
+    "format": "Lata 473 ml",
+    "price": 3200,
+    "tagline": "Refrescante mezcla de cerveza y limón, baja en alcohol. Ideal para el calor.",
+    "file": "radler-limon.jpg"
   }
 ]
+
