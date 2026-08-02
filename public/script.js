@@ -112,10 +112,12 @@ const overlay = document.getElementById("cart-overlay");
 function openCart() {
   drawer.classList.add("open");
   overlay.classList.add("open");
+  document.body.classList.add("cart-open");
 }
 function closeCart() {
   drawer.classList.remove("open");
   overlay.classList.remove("open");
+  document.body.classList.remove("cart-open");
 }
 document.getElementById("cart-toggle").addEventListener("click", openCart);
 document.getElementById("cart-close").addEventListener("click", closeCart);
