@@ -38,6 +38,31 @@ A diferencia de un producto digital, aquí **no hay descarga ni entrega
 automática del producto** — el despacho físico lo preparas y coordinas tú
 después de recibir el aviso por correo.
 
+## Mapa de despacho
+
+El checkout incluye un mapa (OpenStreetMap, gratis, sin API key) donde el
+cliente marca su ubicación. La dirección se completa sola con geocodificación
+inversa, y las coordenadas quedan guardadas en el pedido para generar un link
+directo de Waze.
+
+## Aviso automático por WhatsApp (CallMeBot, gratis)
+
+Además del correo, puedes recibir un WhatsApp automático por cada pedido
+pagado, con los datos del cliente y el link de Waze. Es gratis para uso
+personal, pero necesitas activar tu número tú mismo:
+
+1. Agrega el número +34 644 66 12 92 a tus contactos (es el bot de CallMeBot).
+2. Mándale por WhatsApp el mensaje: `I allow callmebot to send me messages`
+3. Te va a responder con tu API key personal.
+4. En Vercel, agrega `CALLMEBOT_PHONE` (tu número sin el +, ej: 56940253455)
+   y `CALLMEBOT_APIKEY` con la key que te dieron.
+
+Si no configuras esto, el sitio sigue funcionando normal — solo no manda el
+WhatsApp, y sigues recibiendo el correo a `STORE_NOTIFY_EMAIL` igual.
+
+Para SMS no hay una opción gratuita real — servicios como Twilio funcionan,
+pero requieren crear una cuenta y pagar por cada mensaje.
+
 ## Paso 1 — Mercado Pago
 
 Ya deberías tener esto configurado de cuando armamos la primera versión del

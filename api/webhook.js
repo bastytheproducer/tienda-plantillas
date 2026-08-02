@@ -32,6 +32,11 @@ module.exports = async (req, res) => {
       .map((i) => `<li>${i.title} × ${i.quantity} — $${Number(i.unit_price).toLocaleString("es-CL")} c/u</li>`)
       .join("");
 
+    const wazeLink =
+      meta.lat && meta.lng
+        ? `https://waze.com/ul?ll=${meta.lat},${meta.lng}&navigate=yes`
+        : `https://waze.com/ul?q=${encodeURIComponent(`${meta.address || ""}, ${meta.comuna || ""}`)}&navigate=yes`;
+
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     // Confirmación al comprador
@@ -58,12 +63,35 @@ module.exports = async (req, res) => {
         html: `
           <p><strong>Cliente:</strong> ${meta.name || ""} — ${meta.email || ""} — ${meta.phone || ""}</p>
           <p><strong>Dirección de despacho:</strong> ${meta.address || ""}, ${meta.comuna || ""}</p>
+          <p><a href="${wazeLink}">Abrir en Waze →</a></p>
           <p><strong>Pedido:</strong></p>
           <ul>${itemsList}</ul>
           <p><strong>Total:</strong> $${Number(payment.transaction_amount).toLocaleString("es-CL")}</p>
           <p>ID de pago Mercado Pago: ${paymentId}</p>
         `,
       });
+    }
+
+    // Aviso por WhatsApp a la tienda (gratis, vía CallMeBot)
+    if (process.env.CALLMEBOT_PHONE && process.env.CALLMEBOT_APIKEY) {
+      const itemsText = items.map((i) => `${i.quantity}x ${i.title}`).join(", ");
+      const waMessage =
+        `🍺 Nuevo pedido pagado\n` +
+        `Cliente: ${meta.name || ""} (${meta.phone || ""})\n` +
+        `Pedido: ${itemsText}\n` +
+        `Total: $${Number(payment.transaction_amount).toLocaleString("es-CL")}\n` +
+        `Dirección: ${meta.address || ""}, ${meta.comuna || ""}\n` +
+        `Waze: ${wazeLink}`;
+
+      try {
+        await fetch(
+          `https://api.callmebot.com/whatsapp.php?phone=${process.env.CALLMEBOT_PHONE}&text=${encodeURIComponent(
+            waMessage
+          )}&apikey=${process.env.CALLMEBOT_APIKEY}`
+        );
+      } catch (waErr) {
+        console.error("callmebot error:", waErr);
+      }
     }
 
     return res.status(200).send("ok");

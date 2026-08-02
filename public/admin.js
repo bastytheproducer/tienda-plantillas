@@ -146,6 +146,11 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
   }
 });
 
+function wazeUrl(o) {
+  if (o.lat && o.lng) return `https://waze.com/ul?ll=${o.lat},${o.lng}&navigate=yes`;
+  return `https://waze.com/ul?q=${encodeURIComponent(`${o.address || ""}, ${o.comuna || ""}`)}&navigate=yes`;
+}
+
 async function loadOrders() {
   const res = await fetch("/api/admin/orders");
   const tbody = document.getElementById("orders-table");
@@ -165,7 +170,7 @@ async function loadOrders() {
       <td>${new Date(o.date).toLocaleString("es-CL")}</td>
       <td>${o.name || "-"}<br><span style="color:var(--ink-soft);font-size:11px;">${o.email || ""}</span></td>
       <td>${o.phone || "-"}</td>
-      <td>${o.address || "-"}${o.comuna ? ", " + o.comuna : ""}</td>
+      <td>${o.address || "-"}${o.comuna ? ", " + o.comuna : ""}<br><a href="${wazeUrl(o)}" target="_blank" style="font-size:11px;">Abrir en Waze →</a></td>
       <td>${money(o.amount)}</td>
       <td class="status-${o.status}">${o.status}</td>
     </tr>`

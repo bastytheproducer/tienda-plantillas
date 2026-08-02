@@ -117,6 +117,79 @@ document.getElementById("cart-toggle").addEventListener("click", openCart);
 document.getElementById("cart-close").addEventListener("click", closeCart);
 overlay.addEventListener("click", closeCart);
 
+// ---- Mapa de despacho (Leaflet + OpenStreetMap, sin costo ni API key) ----
+let deliveryMap, deliveryMarker;
+let deliveryLat = null;
+let deliveryLng = null;
+
+function initDeliveryMap() {
+  if (deliveryMap) return; // ya inicializado
+  const defaultCenter = [-33.4489, -70.6693]; // Santiago, se ajusta si hay geolocalización
+  deliveryMap = L.map("delivery-map").setView(defaultCenter, 12);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap",
+    maxZoom: 19,
+  }).addTo(deliveryMap);
+
+  deliveryMap.on("click", (e) => placeMarker(e.latlng.lat, e.latlng.lng));
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        deliveryMap.setView([pos.coords.latitude, pos.coords.longitude], 15);
+      },
+      () => {}, // si el usuario no da permiso, se queda en Santiago
+      { timeout: 4000 }
+    );
+  }
+}
+
+function placeMarker(lat, lng) {
+  deliveryLat = lat;
+  deliveryLng = lng;
+  if (deliveryMarker) {
+    deliveryMarker.setLatLng([lat, lng]);
+  } else {
+    deliveryMarker = L.marker([lat, lng], { draggable: true }).addTo(deliveryMap);
+    deliveryMarker.on("dragend", () => {
+      const pos = deliveryMarker.getLatLng();
+      deliveryLat = pos.lat;
+      deliveryLng = pos.lng;
+      reverseGeocode(pos.lat, pos.lng);
+    });
+  }
+  reverseGeocode(lat, lng);
+}
+
+async function reverseGeocode(lat, lng) {
+  const hint = document.getElementById("map-hint");
+  hint.textContent = "Buscando la dirección...";
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+      { headers: { Accept: "application/json" } }
+    );
+    const data = await res.json();
+    const a = data.address || {};
+    const calle = [a.road, a.house_number].filter(Boolean).join(" ");
+    const comuna = a.city_district || a.suburb || a.municipality || a.city || a.town || "";
+    if (calle) document.getElementById("ck-address").value = calle;
+    if (comuna) document.getElementById("ck-comuna").value = comuna;
+    hint.textContent = "Dirección detectada. Puedes corregirla si no es exacta.";
+  } catch {
+    hint.textContent = "No se pudo detectar la dirección automáticamente, escríbela abajo.";
+  }
+}
+
+// El mapa necesita el contenedor visible para dibujarse bien, así que se
+// inicializa cuando se abre el carrito, no al cargar la página.
+document.getElementById("cart-toggle").addEventListener("click", () => {
+  setTimeout(() => {
+    initDeliveryMap();
+    if (deliveryMap) deliveryMap.invalidateSize();
+  }, 200);
+});
+
 // ---- Checkout ----
 document.getElementById("checkout-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -130,6 +203,8 @@ document.getElementById("checkout-form").addEventListener("submit", async (e) =>
     phone: document.getElementById("ck-phone").value,
     address: document.getElementById("ck-address").value,
     comuna: document.getElementById("ck-comuna").value,
+    lat: deliveryLat,
+    lng: deliveryLng,
     ageConfirmed: document.getElementById("ck-age").checked,
   };
 

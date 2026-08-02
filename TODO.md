@@ -1,21 +1,16 @@
-# TODO — Actualizar repo a versión v4 (Barril & Miel)
+# TODO — Actualizar repo a versión v5 (Barril & Miel + mapa + WhatsApp)
 
 ## Objetivo
-Actualizar el repositorio GitHub con la versión v4 del zip `tienda-plantillas_4.zip`,
-que incluye age gate 18+, formulario de despacho, datos de cerveza (estilo/ABV/volumen),
-aviso legal y webhook con aviso de pedido a la tienda — **manteniendo el fix de Upstash
-(POST en body + token con permisos de escritura)**.
+Actualizar el repositorio GitHub con la versión v5 del zip `tienda-plantillas_5.zip`,
+que agrega mapa interactivo en checkout, carrito con múltiples unidades, aviso WhatsApp
+y notificación Waze — **manteniendo el fix de Upstash (POST en body + key barrilymiel:products:v2)**.
 
 ## Pasos
 
-- [x] 1. Copiar frontend v4: `index.html`, `script.js`, `styles.css`, `gracias.html`
-- [x] 2. Copiar admin v4: `admin.html`, `admin.js`
-- [x] 3. Copiar catálogo v4: `data/products.json` (esquema style/abv/volume)
-- [x] 4. Copiar APIs v4: `create-preference.js`, `webhook.js`, `api/admin/products.js`, `api/admin/orders.js`
-- [x] 5. Mantener `lib/kv.js` con el fix POST + cambiar clave Redis a `barrilymiel:products:v2`
-- [x] 6. Eliminar archivos de descarga digital que ya no se usan: `api/download.js`, `api/admin/download.js`, `lib/sign.js`, `private-files/`
-- [x] 7. Copiar `README.md`, `.env.example`, `public/images/LEEME.txt`, `package.json`, `vercel.json`
-- [x] 8. Verificar que no queden referencias a archivos eliminados
-- [x] 9. Commit + push a GitHub
-- [x] 10. Verificar deploy en Vercel (requiere redeploy manual, ver resultado)
-
+- [x] 1. Copiar frontend v5: `index.html` (con Leaflet + mapa), `script.js` (carrito múltiple + mapa), `styles.css` (estilos mapa), `gracias.html`
+- [x] 2. Copiar admin v5: `admin.html` (pedidos con dirección + Waze), `admin.js` (función wazeUrl)
+- [x] 3. Copiar APIs v5: `create-preference.js` (metadata con lat/lng), `webhook.js` (Waze + WhatsApp + STORE_NOTIFY_EMAIL), `api/admin/products.js` (validación campos), `api/admin/orders.js` (datos de dirección)
+- [x] 4. Mantener `lib/kv.js` con el fix POST + clave Redis `barrilymiel:products:v2`
+- [x] 5. Mantener imágenes `.png` en lugar de volver a `.jpg`
+- [x] 6. Copiar `README.md`, `.env.example` (agregar CALLMEBOT_PHONE, CALLMEBOT_APIKEY)
+- [x] 7. Commit + push a GitHub

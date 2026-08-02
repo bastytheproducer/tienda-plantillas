@@ -21,6 +21,8 @@ module.exports = async (req, res) => {
         phone: meta.phone || "",
         address: meta.address || "",
         comuna: meta.comuna || "",
+        lat: meta.lat || "",
+        lng: meta.lng || "",
         date: p.date_created,
       };
     });

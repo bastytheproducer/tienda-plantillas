@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { productIds, name, email, phone, address, comuna, ageConfirmed } = req.body;
+    const { productIds, name, email, phone, address, comuna, lat, lng, ageConfirmed } = req.body;
 
     if (!Array.isArray(productIds) || productIds.length === 0) {
       return res.status(400).json({ error: "Carrito vacío" });
@@ -46,7 +46,16 @@ module.exports = async (req, res) => {
     const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
     const preference = new Preference(client);
 
-    const metadata = { name, email, phone, address, comuna, age_confirmed: true };
+    const metadata = {
+      name,
+      email,
+      phone,
+      address,
+      comuna,
+      age_confirmed: true,
+      lat: lat != null ? String(lat) : "",
+      lng: lng != null ? String(lng) : "",
+    };
 
     const result = await preference.create({
       body: {
