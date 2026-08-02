@@ -11,5 +11,5 @@
 - [x] 7. Cambiar `api/webhook.js` para enviar correo de confirmación de pedido (producto físico, sin enlace de descarga).
 - [x] 8. Cambiar la clave de Redis en `lib/kv.js` (`barrilymiel:products`) para no mostrar el catálogo viejo en producción.
 - [x] 9. Actualizar `package.json` y `README.md`.
-- [ ] 10. Commit + push a GitHub (repo `bastytheproducer/tienda-plantillas`) para que Vercel redeploye.
+- [x] 10. Commit + push a GitHub (repo `bastytheproducer/tienda-plantillas`, commit `8f62ff6`) para que Vercel redeploye.
 
