@@ -51,7 +51,7 @@ Además del correo, puedes recibir un WhatsApp automático por cada pedido
 pagado, con los datos del cliente y el link de Waze. Es gratis para uso
 personal, pero necesitas activar tu número tú mismo:
 
-1. Agrega el número +34 644 66 12 92 a tus contactos (es el bot de CallMeBot).
+1. Agrega el número **+34 644 10 28 72** a tus contactos (es el bot oficial de CallMeBot — verificado en su web oficial el día de hoy).
 2. Mándale por WhatsApp el mensaje: `I allow callmebot to send me messages`
 3. Te va a responder con tu API key personal.
 4. En Vercel, agrega `CALLMEBOT_PHONE` (tu número sin el +, ej: 56933489427)
@@ -64,11 +64,12 @@ Si quieres que los pedidos lleguen también a otro número, agrega en Vercel:
 número, activada de la misma forma con CallMeBot). El webhook envía el aviso
 a los dos números.
 
-Para probar con el número actual +56933489427:
-1. Agrega el bot de CallMeBot a tus contactos.
-2. Mánde el mensaje de activación.
-3. En Vercel: `CALLMEBOT_PHONE=56933489427` y `CALLMEBOT_APIKEY=<tu key>`.
-4. Redeploy.
+Para probar con tu número +56933489427:
+1. Agrega el bot **+34 644 10 28 72** a tus contactos (nómbralo "CallMeBot").
+2. Desde el teléfono con la línea +56933489427, ábrele un WhatsApp y mándale exactamente: `I allow callmebot to send me messages`
+3. Espera 1-2 minutos. Te responderá con tu API key.
+4. En Vercel: `CALLMEBOT_PHONE=56933489427` y `CALLMEBOT_APIKEY=<la key que te dio>`.
+5. Redeploy.
 
 Si no configuras esto, el sitio sigue funcionando normal — solo no manda el
 WhatsApp, y sigues recibiendo el correo a `STORE_NOTIFY_EMAIL` igual.
