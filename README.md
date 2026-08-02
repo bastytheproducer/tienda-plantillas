@@ -51,8 +51,8 @@ Además del correo, puedes recibir un WhatsApp automático por cada pedido
 pagado, con los datos del cliente y el link de Waze. Es gratis para uso
 personal, pero necesitas activar tu número tú mismo:
 
-1. Agrega el número **+34 644 10 28 72** a tus contactos (es el bot oficial de CallMeBot — verificado en su web oficial el día de hoy).
-2. Mándale por WhatsApp el mensaje: `I allow callmebot to send me messages`
+1. Agrega el número **+34 644 596 804** a tus contactos (es el bot oficial actual de CallMeBot).
+2. Mándale por WhatsApp el mensaje: `I allow callmebot to call me`
 3. Te va a responder con tu API key personal.
 4. En Vercel, agrega `CALLMEBOT_PHONE` (tu número sin el +, ej: 56933489427)
    y `CALLMEBOT_APIKEY` con la key que te dieron.
@@ -64,11 +64,11 @@ Si quieres que los pedidos lleguen también a otro número, agrega en Vercel:
 número, activada de la misma forma con CallMeBot). El webhook envía el aviso
 a los dos números.
 
-Para probar con tu número +56933489427:
-1. Agrega el bot **+34 644 10 28 72** a tus contactos (nómbralo "CallMeBot").
-2. Desde el teléfono con la línea +56933489427, ábrele un WhatsApp y mándale exactamente: `I allow callmebot to send me messages`
+Para probar con tu número +56940253455:
+1. Agrega el bot **+34 644 596 804** a tus contactos (nómbralo "CallMeBot").
+2. Desde el teléfono con la línea +56940253455, ábrele un WhatsApp y mándale exactamente: `I allow callmebot to call me`
 3. Espera 1-2 minutos. Te responderá con tu API key.
-4. En Vercel: `CALLMEBOT_PHONE=56933489427` y `CALLMEBOT_APIKEY=<la key que te dio>`.
+4. En Vercel: `CALLMEBOT_PHONE=56940253455` y `CALLMEBOT_APIKEY=<la key que te dio>`.
 5. Redeploy.
 
 Si no configuras esto, el sitio sigue funcionando normal — solo no manda el
