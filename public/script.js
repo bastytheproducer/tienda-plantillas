@@ -256,12 +256,20 @@ let deliveryLng = null;
 function initDeliveryMap() {
   if (deliveryMap) return; // ya inicializado
   const defaultCenter = [-33.4489, -70.6693]; // Santiago, se ajusta si hay geolocalización
-  deliveryMap = L.map("delivery-map").setView(defaultCenter, 12);
+  deliveryMap = L.map("delivery-map", { scrollWheelZoom: false }).setView(defaultCenter, 12);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap",
     maxZoom: 19,
   }).addTo(deliveryMap);
 
+  // Permitir zoom con la rueda solo si el cursor está sobre el mapa,
+  // pero no dejar que "robe" el scroll del carrito al pasar por encima.
+  deliveryMap.on("wheel", (e) => {
+    if (e.originalEvent.ctrlKey) {
+      deliveryMap.scrollWheelZoom.enable();
+      deliveryMap.scrollWheelZoom.onWheelScroll(e);
+    }
+  });
   deliveryMap.on("click", (e) => placeMarker(e.latlng.lat, e.latlng.lng));
 
   if (navigator.geolocation) {
