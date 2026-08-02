@@ -18,12 +18,16 @@ function removeOneFromCart(id) {
 }
 
 // ---- Age gate ----
+// Se usa sessionStorage: la confirmación dura solo mientras dura la sesión
+// del navegador. Al abrir el sitio de nuevo (nueva sesión, incógnito o
+// celular) el aviso de edad vuelve a aparecer, como exige la ley para la
+// venta de alcohol.
 const ageGate = document.getElementById("age-gate");
-if (localStorage.getItem("age_confirmed") === "yes") {
+if (sessionStorage.getItem("age_confirmed") === "yes") {
   ageGate.classList.add("hidden");
 }
 document.getElementById("age-yes").addEventListener("click", () => {
-  localStorage.setItem("age_confirmed", "yes");
+  sessionStorage.setItem("age_confirmed", "yes");
   ageGate.classList.add("hidden");
 });
 
