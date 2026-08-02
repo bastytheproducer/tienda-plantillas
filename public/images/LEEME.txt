@@ -1,7 +1,8 @@
-Sube aquí tus 3 fotos generadas en Gemini, con estos nombres exactos:
+Imágenes usadas actualmente en el sitio:
 
-  hero.jpg       -> la foto de la mesa con botellas (fondo del hero)
-  botella.jpg    -> la foto de la botella sola (tarjeta junto al título)
-  ambiente.jpg   -> la foto del interior con barriles (fondo de "Cómo funciona")
+  hero.png       -> fondo del hero (sección principal)
+  botella.png    -> foto de botella (tarjeta junto al título)
+  ambiente.png   -> fondo de la sección "Cómo funciona"
 
-Si les pones otro nombre, edita esas 3 referencias en public/styles.css e index.html.
+Las imágenes sobrantes no se usan en el código actual.
+Si quieres cambiarlas, edita las referencias en public/styles.css y public/index.html.

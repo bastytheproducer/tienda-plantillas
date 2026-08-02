@@ -87,7 +87,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-0.01em;color:v
 .hero-bg{position:relative;overflow:hidden;}
 .hero-bg::after{
   content:"";position:absolute;inset:0;z-index:0;
-  background:url("images/hero.jpg") center/cover no-repeat;
+background:url("images/hero.png") center/cover no-repeat;
   opacity:0.28;
 }
 .hero-overlay{
@@ -157,7 +157,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-0.01em;color:v
 .how-bg{overflow:hidden;}
 .how-bg::after{
   content:"";position:absolute;inset:0;z-index:0;
-  background:url("images/ambiente.jpg") center/cover no-repeat;
+background:url("images/ambiente.png") center/cover no-repeat;
   opacity:0.22;
 }
 .how-overlay{

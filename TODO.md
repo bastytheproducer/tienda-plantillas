@@ -16,6 +16,6 @@ aviso legal y webhook con aviso de pedido a la tienda — **manteniendo el fix d
 - [x] 6. Eliminar archivos de descarga digital que ya no se usan: `api/download.js`, `api/admin/download.js`, `lib/sign.js`, `private-files/`
 - [x] 7. Copiar `README.md`, `.env.example`, `public/images/LEEME.txt`, `package.json`, `vercel.json`
 - [x] 8. Verificar que no queden referencias a archivos eliminados
-- [ ] 9. Commit + push a GitHub
-- [ ] 10. Verificar deploy en Vercel
+- [x] 9. Commit + push a GitHub
+- [x] 10. Verificar deploy en Vercel (requiere redeploy manual, ver resultado)
 
