@@ -158,15 +158,19 @@
       <label for="ck-phone">Teléfono</label>
       <input type="tel" id="ck-phone" required placeholder="+56 9 ...">
 
+      <label>Busca tu comuna para mover el mapa</label>
+      <div class="comuna-search">
+        <input type="text" id="ck-comuna" placeholder="Escribe tu comuna..." autocomplete="off" required>
+        <div class="comuna-suggestions" id="comuna-suggestions"></div>
+      </div>
+      <p class="map-hint">Selecciona tu comuna de la lista para ubicarte en el mapa, o marca tu dirección directamente.</p>
+
       <label>Marca tu dirección en el mapa</label>
       <div id="delivery-map"></div>
       <p class="map-hint" id="map-hint">Toca el mapa donde quieres el despacho. La dirección se completa sola, pero puedes corregirla.</p>
 
       <label for="ck-address">Dirección de despacho</label>
       <input type="text" id="ck-address" required placeholder="Calle, número, depto/casa">
-
-      <label for="ck-comuna">Comuna</label>
-      <input type="text" id="ck-comuna" required>
 
       <label class="age-confirm">
         <input type="checkbox" id="ck-age" required>
@@ -181,6 +185,7 @@
 <div class="cart-overlay" id="cart-overlay"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="comunas.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

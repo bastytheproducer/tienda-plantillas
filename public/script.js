@@ -117,6 +117,73 @@ document.getElementById("cart-toggle").addEventListener("click", openCart);
 document.getElementById("cart-close").addEventListener("click", closeCart);
 overlay.addEventListener("click", closeCart);
 
+// ---- Autocompletado de comunas de Chile ----
+const comunaInput = document.getElementById("ck-comuna");
+const comunaSuggestions = document.getElementById("comuna-suggestions");
+
+function normalizeStr(s) {
+  return (s || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+comunaInput.addEventListener("input", () => {
+  const q = normalizeStr(comunaInput.value.trim());
+  if (q.length < 2) {
+    comunaSuggestions.innerHTML = "";
+    comunaSuggestions.classList.remove("open");
+    return;
+  }
+  const matches = COMUNAS_CHILE.filter(
+    (c) => normalizeStr(c.n).includes(q) || normalizeStr(c.r).includes(q)
+  ).slice(0, 8);
+
+  if (matches.length === 0) {
+    comunaSuggestions.innerHTML = "";
+    comunaSuggestions.classList.remove("open");
+    return;
+  }
+
+  comunaSuggestions.innerHTML = matches
+    .map(
+      (c) => `
+    <div class="comuna-suggestion" data-lat="${c.lat}" data-lng="${c.lng}">
+      <span class="cs-name">${c.n}</span>
+      <span class="cs-region">${c.r}</span>
+    </div>`
+    )
+    .join("");
+  comunaSuggestions.classList.add("open");
+
+  comunaSuggestions.querySelectorAll(".comuna-suggestion").forEach((el) => {
+    el.addEventListener("click", () => {
+      const lat = parseFloat(el.dataset.lat);
+      const lng = parseFloat(el.dataset.lng);
+      const name = el.querySelector(".cs-name").textContent;
+      comunaInput.value = name;
+      comunaSuggestions.innerHTML = "";
+      comunaSuggestions.classList.remove("open");
+
+      // Mueve el mapa a la comuna seleccionada
+      initDeliveryMap();
+      if (deliveryMap) {
+        deliveryMap.setView([lat, lng], 14);
+        placeMarker(lat, lng);
+      }
+      document.getElementById("ck-address").focus();
+    });
+  });
+});
+
+// Cierra las sugerencias al hacer clic fuera
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".comuna-search")) {
+    comunaSuggestions.innerHTML = "";
+    comunaSuggestions.classList.remove("open");
+  }
+});
+
 // ---- Mapa de despacho (Leaflet + OpenStreetMap, sin costo ni API key) ----
 let deliveryMap, deliveryMarker;
 let deliveryLat = null;
