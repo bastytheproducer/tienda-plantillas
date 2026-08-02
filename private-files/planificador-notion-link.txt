@@ -1,26 +1,2 @@
-PLANTILLA NOTION — PLANIFICADOR FINANCIERO + ACADÉMICO
-=========================================================
+https://app.notion.com/p/Planificador-Financiero-Acad-mico-3b028b42acc080078212fc00065fd21a?source=copy_link
 
-A diferencia de las plantillas de Excel, una plantilla de Notion no se puede
-generar como archivo: Notion funciona armando una página en tu cuenta y
-compartiendo el link público de esa página para que otros la "dupliquen".
-
-Para dejar este producto realmente vendible, necesitas:
-
-1. Crear una cuenta gratis en notion.so (si no tienes).
-2. Armar una página con, como mínimo:
-   - Una base de datos de "Gastos" con columnas: Fecha, Categoría, Monto,
-     Método de pago.
-   - Una base de datos de "Ramos / Entregas" con columnas: Ramo, Entrega,
-     Fecha límite, Estado (pendiente / en progreso / listo).
-   - Un resumen simple con fórmulas de Notion sumando gastos del mes.
-3. Arriba a la derecha de la página, botón "Share" → activa "Share to web"
-   → activa "Allow duplicate as template".
-4. Copia ese link público.
-5. Reemplaza el contenido de este archivo (planificador-notion-link.txt)
-   por ese link, y vuelve a subirlo a private-files/ con el mismo nombre.
-
-Mientras tanto, para no vender algo que no existe, te recomiendo sacar este
-producto del catálogo (bórralo desde el panel admin) hasta que tengas el
-link real. Cuando quieras, te ayudo a redactar el contenido de las bases de
-datos de Notion para que solo tengas que copiar y pegar.
