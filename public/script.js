@@ -86,7 +86,8 @@ function renderCart() {
     if (!p) return "";
     return `
     <div class="cart-item">
-      <div>
+      ${p.image ? `<div class="cart-item-img"><img src="${p.image}" alt="${p.name}"></div>` : ""}
+      <div class="cart-item-info">
         <div class="cart-item-name">${p.name} ${qty > 1 ? `× ${qty}` : ""}</div>
         <div class="cart-item-meta">${p.volume} · ${money(p.price)} c/u</div>
       </div>
