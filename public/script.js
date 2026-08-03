@@ -37,6 +37,7 @@ function renderProducts() {
   grid.innerHTML = PRODUCTS.map(
     (p) => `
     <article class="card">
+      ${p.image ? `<div class="card-img"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>` : ""}
       <span class="card-style">${p.style} · ${p.volume}</span>
       <h3>${p.name}</h3>
       <span class="card-abv">${p.abv}</span>

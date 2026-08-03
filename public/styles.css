@@ -144,16 +144,26 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-0.01em;color:v
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;}
 .card{
   background:var(--paper);color:var(--ink);
-  border-radius:var(--radius);padding:22px;
+  border-radius:var(--radius);padding:0 0 22px;
   display:flex;flex-direction:column;gap:8px;
   border:1px solid transparent;transition:transform .15s, box-shadow .15s;
+  overflow:hidden;
 }
 .card:hover{transform:translateY(-3px);box-shadow:0 16px 32px rgba(0,0,0,0.28);}
-.card-style{font-family:var(--mono);font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.05em;}
-.card h3{font-family:var(--serif);font-size:19px;color:var(--ink);}
-.card-abv{font-family:var(--mono);font-size:12px;color:var(--copper);font-weight:600;}
-.card-tagline{font-size:13.5px;color:var(--ink-soft);flex:1;}
-.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+.card-img{
+  width:100%;aspect-ratio:1/1;overflow:hidden;
+  background:var(--ink-soft);margin-bottom:4px;
+}
+.card-img img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .35s ease;display:block;
+}
+.card:hover .card-img img{transform:scale(1.05);}
+.card-style{font-family:var(--mono);font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.05em;padding:0 22px;}
+.card h3{font-family:var(--serif);font-size:19px;color:var(--ink);padding:0 22px;}
+.card-abv{font-family:var(--mono);font-size:12px;color:var(--copper);font-weight:600;padding:0 22px;}
+.card-tagline{font-size:13.5px;color:var(--ink-soft);flex:1;padding:0 22px;}
+.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding:0 22px;}
 .card-price{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--ink);}
 .card-add{
   background:var(--ink);color:var(--paper);
