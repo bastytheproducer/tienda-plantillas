@@ -14,3 +14,12 @@ y notificación Waze — **manteniendo el fix de Upstash (POST en body + key bar
 - [x] 5. Mantener imágenes `.png` en lugar de volver a `.jpg`
 - [x] 6. Copiar `README.md`, `.env.example` (agregar CALLMEBOT_PHONE, CALLMEBOT_APIKEY)
 - [x] 7. Commit + push a GitHub
+
+## Mejora visual del catálogo ✅
+
+- [x] Agregar imagen real a cada producto del catálogo (APA, Ale, Lager, Hidromiel)
+  - Archivos: `public/images/catalogo-ale.png`, `catalogo-lager.png`, `catalogo-ipa.png`, `catalogo-hidromiel.png`
+- [x] Agregar campo `image` en `data/products.json`
+- [x] Mostrar imagen con `object-fit:cover` en cada tarjeta con zoom al hover
+- [x] Agregar ícono 🛒 al botón "Carrito" en la barra superior
+- [x] Commit + push a GitHub (`826ee7e`)
