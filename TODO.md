@@ -11,7 +11,7 @@ con retiro en tienda gratis y estrategias de enganche justas.
 - [x] 3. `styles.css`: estilos para el selector y el resumen de envío.
 - [x] 4. `create-preference.js`: agregar el costo de envío como ítem del pago y guardarlo en metadata.
 - [x] 5. `webhook.js`: mostrar el costo de envío en los correos y WhatsApp.
-- [ ] 6. Commit + push a GitHub y verificación en producción.
+- [x] 6. Commit + push a GitHub y verificación en producción. (commit `73d0bbf`)
 
 ## Reglas de envío
 - Retiro en tienda → $0 (gratis). Dirección: Puerto Montt, Pasaje Tres Volcanes 30.
