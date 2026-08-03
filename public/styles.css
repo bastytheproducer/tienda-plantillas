@@ -85,25 +85,34 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-0.01em;color:v
 }
 
 /* HERO */
-.hero{padding:72px 0 60px;position:relative;}
-.hero-bg{position:relative;overflow:hidden;}
-.hero-bg::after{
-  content:"";position:absolute;inset:0;z-index:0;
-  background:url("images/hero.png") center/cover no-repeat;
-  opacity:0.28;
+.hero{padding:80px 0 60px;position:relative;}
+.hero-video{position:relative;overflow:hidden;min-height:92vh;display:flex;align-items:center;padding:120px 0;}
+.hero-video-bg{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:0;
 }
 .hero-overlay{
-  position:absolute;inset:0;z-index:0;
-  background:linear-gradient(180deg, var(--bg) 0%, rgba(36,23,19,0.85) 60%, var(--bg) 100%);
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg, rgba(26,15,12,0.55) 0%, rgba(26,15,12,0.72) 60%, var(--bg) 100%);
 }
-.hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr;gap:56px;align-items:center;justify-items:start;}
 .hero-copy h1{font-size:44px;line-height:1.08;margin-bottom:20px;}
 .hero-sub{font-size:16px;color:var(--paper-dim);max-width:46ch;margin-bottom:20px;}
+.hero-logo{
+  display:block;
+  max-width:280px;
+  width:100%;
+  height:auto;
+  margin-bottom:24px;
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,0.5));
+}
 .hero-badge{
   display:inline-flex;align-items:center;gap:8px;
   font-family:var(--mono);font-size:12px;color:var(--copper-bright);
   border:1px solid var(--line-soft);padding:6px 12px;border-radius:var(--radius);
   margin-bottom:24px;
+  background:rgba(26,15,12,0.45);
+  backdrop-filter:blur(4px);
 }
 .hero-cta{display:flex;gap:14px;}
 .btn{
@@ -261,6 +270,8 @@ body.cart-open{overflow:hidden;}
 
 @media (max-width: 860px){
   .hero-inner{grid-template-columns:1fr;}
+  .hero-video{min-height:auto;padding:110px 0 70px;}
+  .hero-logo{max-width:200px;margin-bottom:18px;}
   .how-grid{grid-template-columns:1fr;}
   .topnav{display:none;}
   .hero-copy h1{font-size:34px;}
