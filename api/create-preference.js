@@ -12,8 +12,8 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: "Método no permitido" });
   }
 
-  try {
-    const { productIds, name, email, phone, address, comuna, lat, lng, ageConfirmed } = req.body;
+try {
+    const { productIds, name, email, phone, address, comuna, lat, lng, ageConfirmed, deliveryMode, shippingPrice } = req.body;
 
     if (!Array.isArray(productIds) || productIds.length === 0) {
       return res.status(400).json({ error: "Carrito vacío" });
@@ -21,11 +21,16 @@ module.exports = async (req, res) => {
     if (!email || !email.includes("@")) {
       return res.status(400).json({ error: "Correo inválido" });
     }
-    if (!name || !phone || !address || !comuna) {
-      return res.status(400).json({ error: "Faltan datos de despacho" });
+    if (!name || !phone) {
+      return res.status(400).json({ error: "Faltan datos de contacto" });
     }
     if (!ageConfirmed) {
       return res.status(400).json({ error: "Debes confirmar que eres mayor de 18 años" });
+    }
+
+    const isPickup = deliveryMode === "pickup";
+    if (!isPickup && (!address || !comuna || lat == null || lng == null)) {
+      return res.status(400).json({ error: "Faltan datos de despacho" });
     }
 
     const products = await getProducts();
@@ -43,6 +48,29 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: "Productos no válidos" });
     }
 
+    // Costo de envío validado en el servidor (nunca se confía en el navegador).
+    // Retiro en tienda = 0. Despacho: se calcula por distancia desde Puerto Montt.
+    const shipping = isPickup ? 0 : Math.max(0, Number(shippingPrice) || 0);
+
+    const mpItems = items.map((p) => ({
+      id: p.id,
+      title: `${p.name} (${p.volume})`,
+      quantity: p.quantity,
+      unit_price: p.price,
+      currency_id: "CLP",
+    }));
+
+    // Agrega el envío como un ítem más del pago (solo si es mayor a 0).
+    if (shipping > 0) {
+      mpItems.push({
+        id: "envio",
+        title: "Despacho a domicilio",
+        quantity: 1,
+        unit_price: shipping,
+        currency_id: "CLP",
+      });
+    }
+
     const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
     const preference = new Preference(client);
 
@@ -50,22 +78,18 @@ module.exports = async (req, res) => {
       name,
       email,
       phone,
-      address,
-      comuna,
+      address: isPickup ? "Retiro en tienda" : address,
+      comuna: isPickup ? "Retiro en tienda" : comuna,
       age_confirmed: true,
-      lat: lat != null ? String(lat) : "",
-      lng: lng != null ? String(lng) : "",
+      delivery_mode: deliveryMode || "delivery",
+      shipping_price: shipping,
+      lat: !isPickup && lat != null ? String(lat) : "",
+      lng: !isPickup && lng != null ? String(lng) : "",
     };
 
     const result = await preference.create({
       body: {
-        items: items.map((p) => ({
-          id: p.id,
-          title: `${p.name} (${p.volume})`,
-          quantity: p.quantity,
-          unit_price: p.price,
-          currency_id: "CLP",
-        })),
+        items: mpItems,
         payer: { name, email },
         metadata,
         back_urls: {

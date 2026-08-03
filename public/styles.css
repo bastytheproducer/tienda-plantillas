@@ -250,7 +250,28 @@ body.cart-open{overflow:hidden;}
 .cart-item-remove{background:none;border:none;color:#A8432F;font-size:12px;cursor:pointer;text-decoration:underline;}
 .cart-foot{flex:none;overflow:visible;padding:18px 22px 40px;border-top:1px solid rgba(43,27,18,0.12);}
 .cart-total{display:flex;justify-content:space-between;font-family:var(--mono);font-weight:600;margin-bottom:14px;font-size:16px;}
+.cart-total-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:8px;}
+.cart-total.subtotal-highlight{font-size:18px;color:var(--ink);border-top:1px solid rgba(43,27,18,0.12);padding-top:12px;margin-top:4px;}
 .cart-note{font-size:12px;color:var(--ink-soft);margin-top:10px;}
+
+/* Selector de modo de entrega (despacho / retiro) */
+.delivery-mode-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 16px;}
+.dm-btn{
+  background:var(--paper);border:1px solid rgba(43,27,18,0.2);color:var(--ink-soft);
+  padding:10px 8px;border-radius:var(--radius);font-family:var(--sans);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .15s;text-align:center;
+}
+.dm-btn:hover{border-color:var(--copper);}
+.dm-btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+/* Resumen de envío */
+.ship-summary{background:rgba(201,122,61,0.1);border:1px solid rgba(201,122,61,0.35);border-radius:var(--radius);padding:10px 12px;margin:0 0 12px;}
+.shipping-info{font-size:12.5px;color:var(--ink-soft);line-height:1.5;}
+.shipping-info strong{color:var(--ink);}
+
+/* Bloque de retiro en tienda */
+.pickup-info{background:rgba(92,122,79,0.1);border:1px solid rgba(92,122,79,0.3);border-radius:var(--radius);padding:12px 14px;margin:0 0 12px;font-size:13px;color:var(--ink-soft);}
+.pickup-info strong{color:var(--ink);display:block;margin-bottom:4px;}
 
 /* CHECKOUT FORM (in drawer) */
 .checkout-form{display:flex;flex-direction:column;gap:10px;margin-top:6px;}

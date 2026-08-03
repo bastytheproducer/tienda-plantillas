@@ -1,25 +1,24 @@
-# TODO — Actualizar repo a versión v5 (Barril & Miel + mapa + WhatsApp)
+# TODO — Costo de envío según domicilio (Barril & Miel)
 
 ## Objetivo
-Actualizar el repositorio GitHub con la versión v5 del zip `tienda-plantillas_5.zip`,
-que agrega mapa interactivo en checkout, carrito con múltiples unidades, aviso WhatsApp
-y notificación Waze — **manteniendo el fix de Upstash (POST en body + key barrilymiel:products:v2)**.
+Agregar el costo de envío al carrito según la comuna/dirección del cliente,
+con retiro en tienda gratis y estrategias de enganche justas.
 
-## Pasos
+## Estado: en progreso
 
-- [x] 1. Copiar frontend v5: `index.html` (con Leaflet + mapa), `script.js` (carrito múltiple + mapa), `styles.css` (estilos mapa), `gracias.html`
-- [x] 2. Copiar admin v5: `admin.html` (pedidos con dirección + Waze), `admin.js` (función wazeUrl)
-- [x] 3. Copiar APIs v5: `create-preference.js` (metadata con lat/lng), `webhook.js` (Waze + WhatsApp + STORE_NOTIFY_EMAIL), `api/admin/products.js` (validación campos), `api/admin/orders.js` (datos de dirección)
-- [x] 4. Mantener `lib/kv.js` con el fix POST + clave Redis `barrilymiel:products:v2`
-- [x] 5. Mantener imágenes `.png` en lugar de volver a `.jpg`
-- [x] 6. Copiar `README.md`, `.env.example` (agregar CALLMEBOT_PHONE, CALLMEBOT_APIKEY)
-- [x] 7. Commit + push a GitHub
+- [x] 1. `script.js`: agregar selector Retiro/Despacho y cálculo de envío por zona (Haversine desde Puerto Montt).
+- [x] 2. `index.html`: agregar selector de modo de entrega y bloque de resumen de envío.
+- [x] 3. `styles.css`: estilos para el selector y el resumen de envío.
+- [x] 4. `create-preference.js`: agregar el costo de envío como ítem del pago y guardarlo en metadata.
+- [x] 5. `webhook.js`: mostrar el costo de envío en los correos y WhatsApp.
+- [ ] 6. Commit + push a GitHub y verificación en producción.
 
-## Mejora visual del catálogo ✅
-
-- [x] Agregar imagen real a cada producto del catálogo (APA, Ale, Lager, Hidromiel)
-  - Archivos: `public/images/catalogo-ale.png`, `catalogo-lager.png`, `catalogo-ipa.png`, `catalogo-hidromiel.png`
-- [x] Agregar campo `image` en `data/products.json`
-- [x] Mostrar imagen con `object-fit:cover` en cada tarjeta con zoom al hover
-- [x] Agregar ícono 🛒 al botón "Carrito" en la barra superior
-- [x] Commit + push a GitHub (`826ee7e`)
+## Reglas de envío
+- Retiro en tienda → $0 (gratis). Dirección: Puerto Montt, Pasaje Tres Volcanes 30.
+- Despacho a domicilio → según zona de distancia desde Puerto Montt:
+  - Z1: 0–8 km → $1.990
+  - Z2: 8–20 km → $3.490
+  - Z3: 20–40 km → $4.990
+  - Z4: 40–100 km → $6.990
+  - Z5: +100 km → $9.990
+- Envío GRATIS si el subtotal supera $25.000 (despacho).

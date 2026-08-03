@@ -144,12 +144,62 @@
   </div>
   <div class="cart-items" id="cart-items"></div>
   <div class="cart-foot">
-    <div class="cart-total">
-      <span>Total</span>
+    <!-- Subtotal -->
+    <div class="cart-total-row">
+      <span>Subtotal</span>
+      <span id="cart-subtotal-amount">$0</span>
+    </div>
+
+    <!-- Modo de entrega -->
+    <div class="delivery-mode-selector">
+      <button class="dm-btn active" id="dm-delivery" data-mode="delivery">Despacho a domicilio</button>
+      <button class="dm-btn" id="dm-pickup" data-mode="pickup">Retiro en tienda</button>
+    </div>
+
+    <!-- Bloque de despacho -->
+    <div id="delivery-fields">
+      <label>Busca tu comuna para mover el mapa</label>
+      <div class="comuna-search">
+        <input type="text" id="ck-comuna" placeholder="Escribe tu comuna..." autocomplete="off">
+        <div class="comuna-suggestions" id="comuna-suggestions"></div>
+      </div>
+      <p class="map-hint">Selecciona tu comuna de la lista para ubicarte, o marca tu dirección en el mapa.</p>
+
+      <label>Marca tu dirección en el mapa</label>
+      <div id="delivery-map"></div>
+      <p class="map-hint" id="map-hint">Toca el mapa donde quieres el despacho.</p>
+
+      <label for="ck-address">Dirección de despacho</label>
+      <input type="text" id="ck-address" placeholder="Calle, número, depto/casa">
+    </div>
+
+    <!-- Bloque de retiro -->
+    <div id="pickup-note" style="display:none;">
+      <div class="pickup-info">
+        <strong>📍 Retiro en tienda</strong>
+        <p>Pasaje Tres Volcanes 30, Puerto Montt</p>
+        <p style="font-size:12px;color:var(--ink-soft);margin-top:4px;">Coordinamos el día y hora por WhatsApp o correo cuando el pedido esté listo (2-4 días hábiles). Sin costo de envío.</p>
+      </div>
+    </div>
+
+    <!-- Resumen de envío (solo despacho) -->
+    <div id="shipping-summary" class="ship-summary" style="display:none;">
+      <div class="shipping-info" id="shipping-info">Selecciona tu comuna para calcular el envío.</div>
+    </div>
+
+    <!-- Costo de envío -->
+    <div class="cart-total-row">
+      <span>Envío</span>
+      <span id="cart-shipping-amount">—</span>
+    </div>
+
+    <!-- Total -->
+    <div class="cart-total subtotal-highlight">
+      <span>Total a pagar</span>
       <span id="cart-total-amount">$0</span>
     </div>
 
-    <form class="checkout-form" id="checkout-form">
+    <form class="checkout-form" id="checkout-form" style="display:block;">
       <label for="ck-name">Nombre completo</label>
       <input type="text" id="ck-name" required>
 
@@ -158,20 +208,6 @@
 
       <label for="ck-phone">Teléfono</label>
       <input type="tel" id="ck-phone" required placeholder="+56 9 ...">
-
-      <label>Busca tu comuna para mover el mapa</label>
-      <div class="comuna-search">
-        <input type="text" id="ck-comuna" placeholder="Escribe tu comuna..." autocomplete="off" required>
-        <div class="comuna-suggestions" id="comuna-suggestions"></div>
-      </div>
-      <p class="map-hint">Selecciona tu comuna de la lista para ubicarte en el mapa, o marca tu dirección directamente.</p>
-
-      <label>Marca tu dirección en el mapa</label>
-      <div id="delivery-map"></div>
-      <p class="map-hint" id="map-hint">Toca el mapa donde quieres el despacho. La dirección se completa sola, pero puedes corregirla.</p>
-
-      <label for="ck-address">Dirección de despacho</label>
-      <input type="text" id="ck-address" required placeholder="Calle, número, depto/casa">
 
       <label class="age-confirm">
         <input type="checkbox" id="ck-age" required>

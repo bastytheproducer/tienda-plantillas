@@ -1,7 +1,63 @@
-const money = (n) => "$" + n.toLocaleString("es-CL");
+const money = (n) => "$" + Math.round(n).toLocaleString("es-CL");
 
 let PRODUCTS = [];
 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+// ---- Costos de envío (Barril & Miel, origen: Puerto Montt, Pasaje Tres Volcanes 30) ----
+const ORIGEN_LAT = -41.4692;
+const ORIGEN_LNG = -72.9392;
+const STORE_ADDRESS = "Pasaje Tres Volcanes 30, Puerto Montt";
+const FREE_SHIPPING_MIN = 25000; // envío gratis si el subtotal supera este monto
+
+const SHIPPING_ZONES = [
+  { maxKm: 8, label: "Puerto Montt", price: 0 },        // Zona 1 — GRATIS local
+  { maxKm: 20, label: "Puerto Varas / Llanquihue", price: 2490 },
+  { maxKm: 40, label: "Frutillar / Calbuco", price: 3990 },
+  { maxKm: 100, label: "Resto Los Lagos", price: 5990 },
+  { maxKm: Infinity, label: "Resto de Chile", price: 9990 },
+];
+
+let deliveryMode = "delivery"; // "delivery" | "pickup"
+
+// Fórmula de Haversine para distancia en km entre dos coordenadas
+function distanceKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function getCartSubtotal() {
+  return cart.reduce((sum, id) => {
+    const p = PRODUCTS.find((x) => x.id === id);
+    return sum + (p ? p.price : 0);
+  }, 0);
+}
+
+function getShippingInfo() {
+  if (deliveryMode === "pickup") {
+    return { price: 0, label: "Retiro en tienda", zone: "Retiro gratis en Pasaje Tres Volcanes 30, Puerto Montt" };
+  }
+  if (deliveryLat == null || deliveryLng == null) {
+    return null; // aún no hay ubicación
+  }
+  const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, deliveryLat, deliveryLng);
+  const zone = SHIPPING_ZONES.find((z) => dist <= z.maxKm);
+  const freeByAmount = getCartSubtotal() >= FREE_SHIPPING_MIN;
+  const price = freeByAmount || zone.price === 0 ? 0 : zone.price;
+  return {
+    price,
+    label: zone.label,
+    zone: `~${Math.round(dist)} km desde ${STORE_ADDRESS}`,
+    distanceKm: Math.round(dist),
+    freeByAmount,
+  };
+}
 
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
@@ -66,6 +122,8 @@ function renderProducts() {
 function renderCart() {
   const itemsEl = document.getElementById("cart-items");
   const countEl = document.getElementById("cart-count");
+  const subtotalEl = document.getElementById("cart-subtotal-amount");
+  const shippingEl = document.getElementById("cart-shipping-amount");
   const totalEl = document.getElementById("cart-total-amount");
   const checkoutBtn = document.getElementById("checkout-btn");
 
@@ -73,6 +131,8 @@ function renderCart() {
 
   if (cart.length === 0) {
     itemsEl.innerHTML = '<p class="cart-empty">Tu carrito está vacío.</p>';
+    if (subtotalEl) subtotalEl.textContent = money(0);
+    if (shippingEl) shippingEl.textContent = money(0);
     totalEl.textContent = money(0);
     checkoutBtn.disabled = true;
     return;
@@ -100,10 +160,21 @@ function renderCart() {
     btn.addEventListener("click", () => removeOneFromCart(btn.dataset.id));
   });
 
-  const total = cart.reduce((sum, id) => {
-    const p = PRODUCTS.find((x) => x.id === id);
-    return sum + (p ? p.price : 0);
-  }, 0);
+  const subtotal = getCartSubtotal();
+  const shipping = getShippingInfo();
+  const shippingPrice = shipping?.price || 0;
+  const total = subtotal + shippingPrice;
+
+  if (subtotalEl) subtotalEl.textContent = money(subtotal);
+  if (shippingEl) {
+    if (shipping && (shipping.price === 0 || shipping.freeByAmount || deliveryMode === "pickup")) {
+      shippingEl.textContent = "Gratis";
+    } else if (shipping) {
+      shippingEl.textContent = money(shippingPrice);
+    } else {
+      shippingEl.textContent = "—";
+    }
+  }
   totalEl.textContent = money(total);
   checkoutBtn.disabled = false;
 }
@@ -167,6 +238,7 @@ function selectSuggestion(el) {
     deliveryMap.setView([lat, lng], 14);
     placeMarker(lat, lng);
   }
+  renderShippingSummary();
   document.getElementById("ck-address").focus();
 }
 
@@ -296,9 +368,13 @@ function placeMarker(lat, lng) {
       const pos = deliveryMarker.getLatLng();
       deliveryLat = pos.lat;
       deliveryLng = pos.lng;
+      renderShippingSummary();
+      renderCart();
       reverseGeocode(pos.lat, pos.lng);
     });
   }
+  renderShippingSummary();
+  renderCart();
   reverseGeocode(lat, lng);
 }
 
@@ -331,26 +407,91 @@ document.getElementById("cart-toggle").addEventListener("click", () => {
   }, 200);
 });
 
+// ---- Selector de modo de entrega (despacho / retiro) ----
+function setDeliveryMode(mode) {
+  deliveryMode = mode;
+  const deliveryForm = document.getElementById("delivery-fields");
+  const pickupNote = document.getElementById("pickup-note");
+  const shipSummary = document.getElementById("shipping-summary");
+  const dmDelivery = document.getElementById("dm-delivery");
+  const dmPickup = document.getElementById("dm-pickup");
+
+  if (dmDelivery) dmDelivery.classList.toggle("active", mode === "delivery");
+  if (dmPickup) dmPickup.classList.toggle("active", mode === "pickup");
+
+  if (mode === "pickup") {
+    if (deliveryForm) deliveryForm.style.display = "none";
+    if (pickupNote) pickupNote.style.display = "block";
+    if (shipSummary) shipSummary.style.display = "none";
+  } else {
+    if (deliveryForm) deliveryForm.style.display = "block";
+    if (pickupNote) pickupNote.style.display = "none";
+    if (shipSummary) shipSummary.style.display = "block";
+    renderShippingSummary();
+  }
+  renderCart();
+}
+
+document.getElementById("dm-delivery")?.addEventListener("click", () => setDeliveryMode("delivery"));
+document.getElementById("dm-pickup")?.addEventListener("click", () => setDeliveryMode("pickup"));
+
+// ---- Resumen de envío en el carrito ----
+function renderShippingSummary() {
+  const el = document.getElementById("shipping-summary");
+  const infoEl = document.getElementById("shipping-info");
+  if (!el) return;
+  const shipping = getShippingInfo();
+  if (deliveryMode === "pickup") {
+    el.style.display = "none";
+    return;
+  }
+  el.style.display = "block";
+  if (!shipping) {
+    infoEl.innerHTML = "Selecciona tu comuna o marca tu dirección en el mapa para calcular el costo de envío.";
+    return;
+  }
+  const freeByAmount = getCartSubtotal() >= FREE_SHIPPING_MIN;
+  let line;
+  if (shipping.price === 0) {
+    line = `<strong>Envío gratis</strong> · ${shipping.label} (${shipping.zone})`;
+  } else if (freeByAmount) {
+    line = `<strong>Envío gratis</strong> por superar $${FREE_SHIPPING_MIN.toLocaleString("es-CL")} · ${shipping.label}`;
+  } else {
+    line = `<strong>${money(shipping.price)}</strong> · ${shipping.label} (${shipping.zone})`;
+  }
+  infoEl.innerHTML = line;
+}
+
 // ---- Checkout ----
 document.getElementById("checkout-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const note = document.getElementById("checkout-note");
   const btn = document.getElementById("checkout-btn");
 
+  const shipping = getShippingInfo();
+  const isPickup = deliveryMode === "pickup";
+
   const payload = {
     productIds: cart,
     name: document.getElementById("ck-name").value,
     email: document.getElementById("ck-email").value,
     phone: document.getElementById("ck-phone").value,
-    address: document.getElementById("ck-address").value,
-    comuna: document.getElementById("ck-comuna").value,
-    lat: deliveryLat,
-    lng: deliveryLng,
+    address: isPickup ? STORE_ADDRESS : document.getElementById("ck-address").value,
+    comuna: isPickup ? "Retiro en tienda" : document.getElementById("ck-comuna").value,
+    lat: isPickup ? null : deliveryLat,
+    lng: isPickup ? null : deliveryLng,
+    deliveryMode,
+    shippingPrice: isPickup ? 0 : shipping?.price || 0,
     ageConfirmed: document.getElementById("ck-age").checked,
   };
 
   if (!payload.ageConfirmed) {
     note.textContent = "Debes confirmar que eres mayor de 18 años para continuar.";
+    return;
+  }
+
+  if (!isPickup && !shipping) {
+    note.textContent = "Selecciona tu comuna o marca tu dirección en el mapa para calcular el envío.";
     return;
   }
 
@@ -378,5 +519,7 @@ async function init() {
   PRODUCTS = await res.json();
   renderProducts();
   renderCart();
+  renderShippingSummary();
+  setDeliveryMode("delivery");
 }
 init();

@@ -34,6 +34,14 @@ module.exports = async (req, res) => {
       .map((i) => `<li>${i.title} × ${i.quantity} — $${Number(i.unit_price).toLocaleString("es-CL")} c/u</li>`)
       .join("");
 
+    const isPickup = meta.delivery_mode === "pickup";
+    const shippingPrice = Number(meta.shipping_price) || 0;
+    const shippingText = isPickup
+      ? "Retiro en tienda (sin costo)"
+      : shippingPrice > 0
+        ? `Despacho a domicilio — $${shippingPrice.toLocaleString("es-CL")}`
+        : "Despacho a domicilio — envío gratis";
+
     const wazeLink =
       meta.lat && meta.lng
         ? `https://waze.com/ul?ll=${meta.lat},${meta.lng}&navigate=yes`
@@ -50,8 +58,11 @@ module.exports = async (req, res) => {
         <p>Gracias por tu compra, ${meta.name || ""}.</p>
         <p>Tu pedido:</p>
         <ul>${itemsList}</ul>
+        <p><strong>Envío:</strong> ${shippingText}</p>
         <p><strong>Total pagado:</strong> $${Number(payment.transaction_amount).toLocaleString("es-CL")}</p>
-        <p>Lo vamos a despachar a: ${meta.address || ""}, ${meta.comuna || ""}. Tiempo estimado: 2 a 4 días hábiles.</p>
+        <p>${isPickup
+          ? `Te esperamos en ${meta.address || "nuestra tienda"}. Coordinamos el retiro por correo o WhatsApp cuando esté listo.`
+          : `Lo vamos a despachar a: ${meta.address || ""}, ${meta.comuna || ""}. Tiempo estimado: 2 a 4 días hábiles.`}</p>
         <p>Cualquier duda, responde este correo.</p>
       `,
     });
@@ -64,10 +75,12 @@ module.exports = async (req, res) => {
         subject: `Nuevo pedido pagado — $${Number(payment.transaction_amount).toLocaleString("es-CL")}`,
         html: `
           <p><strong>Cliente:</strong> ${meta.name || ""} — ${meta.email || ""} — ${meta.phone || ""}</p>
-          <p><strong>Dirección de despacho:</strong> ${meta.address || ""}, ${meta.comuna || ""}</p>
-          <p><a href="${wazeLink}">Abrir en Waze →</a></p>
+          <p><strong>Entrega:</strong> ${shippingText}</p>
+          <p><strong>Dirección:</strong> ${meta.address || ""}, ${meta.comuna || ""}</p>
+          ${isPickup ? "" : `<p><a href="${wazeLink}">Abrir en Waze →</a></p>`}
           <p><strong>Pedido:</strong></p>
           <ul>${itemsList}</ul>
+          <p><strong>Envío:</strong> ${shippingText}</p>
           <p><strong>Total:</strong> $${Number(payment.transaction_amount).toLocaleString("es-CL")}</p>
           <p>ID de pago Mercado Pago: ${paymentId}</p>
         `,
@@ -82,9 +95,10 @@ module.exports = async (req, res) => {
       `🍺 Nuevo pedido pagado\n` +
       `Cliente: ${meta.name || ""} (${meta.phone || ""})\n` +
       `Pedido: ${itemsText}\n` +
+      `Envío: ${shippingText}\n` +
       `Total: $${Number(payment.transaction_amount).toLocaleString("es-CL")}\n` +
       `Dirección: ${meta.address || ""}, ${meta.comuna || ""}\n` +
-      `Waze: ${wazeLink}`;
+      `${isPickup ? "" : `Waze: ${wazeLink}\n`}`;
 
     const waTargets = [
       { phone: process.env.CALLMEBOT_PHONE, apikey: process.env.CALLMEBOT_APIKEY },
