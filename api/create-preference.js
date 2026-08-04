@@ -13,13 +13,11 @@ const { getProducts } = require("../lib/kv");
 const ORIGEN_LAT = -41.41005;
 const ORIGEN_LNG = -72.874869;
 
-// Zonas de envío: precios calculados para cubrir bencina ($1.478/L, ~10 km/L)
-// y desgaste del vehículo. El despacho siempre se cobra; el retiro es gratis.
-const SHIPPING_ZONES = [
-  { maxKm: 8, price: 2990 },
-  { maxKm: 15, price: 4990 },
-];
-const PRICE_15_20 = 7000; // km 15-20
+// Envío progresivo: desde $5.000 (cerca del origen) hasta $7.000 a los
+// 15 km. El despacho siempre se cobra; el retiro es gratis.
+const MIN_SHIPPING = 5000; // envío mínimo (cerca del origen)
+const MAX_SHIPPING = 7000; // envío máximo (a partir de los 15 km)
+const FULL_PRICE_KM = 15; // a esta distancia se alcanza el precio máximo de $7.000
 const MAX_DELIVERY_KM = 30; // no se despacha más allá de 30 km
 
 function distanceKm(lat1, lng1, lat2, lng2) {
@@ -39,13 +37,11 @@ function calculateShipping(isPickup, lat, lng) {
   const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, Number(lat), Number(lng));
   // Más de 30 km: no se hace envío.
   if (dist > MAX_DELIVERY_KM) return null;
-  // 20-30 km: precio x3.
-  if (dist > 20) return 21000;
-  // 15-20 km: $7.000.
-  if (dist > 15) return PRICE_15_20;
-  // Hasta 15 km: precio base por zona.
-  const zone = SHIPPING_ZONES.find((z) => dist <= z.maxKm);
-  return zone.price;
+  // Precio progresivo: desde $5.000 (cerca del origen) hasta $7.000 a los
+  // 15 km. Se redondea al múltiplo de $100 más cercano para montos claros.
+  const ratio = Math.min(dist / FULL_PRICE_KM, 1);
+  const price = Math.round((MIN_SHIPPING + (MAX_SHIPPING - MIN_SHIPPING) * ratio) / 100) * 100;
+  return price;
 }
 
 module.exports = async (req, res) => {

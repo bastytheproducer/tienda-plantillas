@@ -18,13 +18,11 @@ const STORE_ADDRESS = "Taller Pintura y Desabolladura Fernando Olea, Puerto Mont
 //  - 15-20 km: $7.000.
 //  - 20-30 km: precio x3 ($21.000).
 //  - Más de 30 km: NO se hace envío.
-const SHIPPING_ZONES = [
-  { maxKm: 8, label: "Puerto Montt", price: 2990 },
-  { maxKm: 15, label: "Puerto Varas / Llanquihue", price: 4990 },
-];
-const PRICE_15_20 = 7000; // km 15-20
+const MIN_SHIPPING = 5000; // envío mínimo (cerca del origen)
+const MAX_SHIPPING = 7000; // envío máximo (a partir de los 15 km)
+const FULL_PRICE_KM = 15; // a esta distancia se alcanza el precio máximo de $7.000
 const MAX_DELIVERY_KM = 30; // no se despacha más allá de 30 km
-const DELIVERY_TIME = "1 a 30 minutos"; // entrega estimada desde el pedido
+const DELIVERY_TIME = "una hora y media"; // entrega estimada desde el pedido
 
 let deliveryMode = "delivery"; // "delivery" | "pickup"
 
@@ -55,34 +53,18 @@ return { price: 0, label: "Retiro en tienda", zone: "Retiro gratis en Taller Pin
 if (deliveryLat == null || deliveryLng == null) {
     return null; // aún no hay ubicación
   }
-  const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, deliveryLat, deliveryLng);
+const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, deliveryLat, deliveryLng);
   // Más de 30 km: no se hace envío.
   if (dist > MAX_DELIVERY_KM) {
     return { noDelivery: true, distanceKm: Math.round(dist) };
   }
-  // 20-30 km: precio x3.
-  if (dist > 20) {
-    return {
-      price: 21000,
-      label: "Zona extendida (x3)",
-      zone: `~${Math.round(dist)} km desde ${STORE_ADDRESS}`,
-      distanceKm: Math.round(dist),
-    };
-  }
-  // 15-20 km: $7.000.
-  if (dist > 15) {
-    return {
-      price: PRICE_15_20,
-      label: "Zona 15-20 km",
-      zone: `~${Math.round(dist)} km desde ${STORE_ADDRESS}`,
-      distanceKm: Math.round(dist),
-    };
-  }
-  // Hasta 15 km: precio base por zona.
-  const zone = SHIPPING_ZONES.find((z) => dist <= z.maxKm);
+  // Precio progresivo: desde $5.000 (cerca del origen) hasta $7.000 a los
+  // 15 km. Se redondea al múltiplo de $100 más cercano para montos claros.
+  const ratio = Math.min(dist / FULL_PRICE_KM, 1);
+  const price = Math.round((MIN_SHIPPING + (MAX_SHIPPING - MIN_SHIPPING) * ratio) / 100) * 100;
   return {
-    price: zone.price,
-    label: zone.label,
+    price,
+    label: "Despacho a domicilio",
     zone: `~${Math.round(dist)} km desde ${STORE_ADDRESS}`,
     distanceKm: Math.round(dist),
   };
