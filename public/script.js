@@ -13,13 +13,18 @@ const STORE_ADDRESS = "Taller Pintura y Desabolladura Fernando Olea, Puerto Mont
 // Precios de envío calculados para cubrir la bencina ($1.478/L, ~10 km/L)
 // y el desgaste del vehículo. Retiro en tienda es gratis; el despacho
 // siembre se cobra según la distancia desde Puerto Montt.
+// Reglas:
+//  - Hasta 15 km: precio base por zona.
+//  - 15-20 km: $7.000.
+//  - 20-30 km: precio x3 ($21.000).
+//  - Más de 30 km: NO se hace envío.
 const SHIPPING_ZONES = [
   { maxKm: 8, label: "Puerto Montt", price: 2990 },
-  { maxKm: 20, label: "Puerto Varas / Llanquihue", price: 4990 },
-  { maxKm: 40, label: "Frutillar / Calbuco", price: 7990 },
-  { maxKm: 100, label: "Resto Los Lagos", price: 14990 },
-  { maxKm: Infinity, label: "Resto de Chile", price: 29990 },
+  { maxKm: 15, label: "Puerto Varas / Llanquihue", price: 4990 },
 ];
+const PRICE_15_20 = 7000; // km 15-20
+const MAX_DELIVERY_KM = 30; // no se despacha más allá de 30 km
+const DELIVERY_TIME = "1 a 30 minutos"; // entrega estimada desde el pedido
 
 let deliveryMode = "delivery"; // "delivery" | "pickup"
 
@@ -47,16 +52,36 @@ function getShippingInfo() {
   if (deliveryMode === "pickup") {
 return { price: 0, label: "Retiro en tienda", zone: "Retiro gratis en Taller Pintura y Desabolladura Fernando Olea, Puerto Montt" };
   }
-  if (deliveryLat == null || deliveryLng == null) {
+if (deliveryLat == null || deliveryLng == null) {
     return null; // aún no hay ubicación
   }
-const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, deliveryLat, deliveryLng);
+  const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, deliveryLat, deliveryLng);
+  // Más de 30 km: no se hace envío.
+  if (dist > MAX_DELIVERY_KM) {
+    return { noDelivery: true, distanceKm: Math.round(dist) };
+  }
+  // 20-30 km: precio x3.
+  if (dist > 20) {
+    return {
+      price: 21000,
+      label: "Zona extendida (x3)",
+      zone: `~${Math.round(dist)} km desde ${STORE_ADDRESS}`,
+      distanceKm: Math.round(dist),
+    };
+  }
+  // 15-20 km: $7.000.
+  if (dist > 15) {
+    return {
+      price: PRICE_15_20,
+      label: "Zona 15-20 km",
+      zone: `~${Math.round(dist)} km desde ${STORE_ADDRESS}`,
+      distanceKm: Math.round(dist),
+    };
+  }
+  // Hasta 15 km: precio base por zona.
   const zone = SHIPPING_ZONES.find((z) => dist <= z.maxKm);
-  // Para distancias > 28 km se cobra el TRIPLE (x3): considera el viaje de
-  // vuelta y posibles peajes en la ruta.
-  const price = dist > 28 ? zone.price * 3 : zone.price;
   return {
-    price,
+    price: zone.price,
     label: zone.label,
     zone: `~${Math.round(dist)} km desde ${STORE_ADDRESS}`,
     distanceKm: Math.round(dist),
@@ -164,14 +189,16 @@ function renderCart() {
     btn.addEventListener("click", () => removeOneFromCart(btn.dataset.id));
   });
 
-  const subtotal = getCartSubtotal();
+const subtotal = getCartSubtotal();
   const shipping = getShippingInfo();
   const shippingPrice = shipping?.price || 0;
   const total = subtotal + shippingPrice;
 
   if (subtotalEl) subtotalEl.textContent = money(subtotal);
   if (shippingEl) {
-    if (shipping && (shipping.price === 0 || deliveryMode === "pickup")) {
+    if (shipping?.noDelivery) {
+      shippingEl.textContent = "No disponible";
+    } else if (shipping && (shipping.price === 0 || deliveryMode === "pickup")) {
       shippingEl.textContent = "Gratis";
     } else if (shipping) {
       shippingEl.textContent = money(shippingPrice);
@@ -180,7 +207,13 @@ function renderCart() {
     }
   }
   totalEl.textContent = money(total);
-  checkoutBtn.disabled = false;
+  // Si la distancia supera 30 km, no se puede pagar (no hay envío).
+  checkoutBtn.disabled = Boolean(shipping?.noDelivery);
+  if (shipping?.noDelivery) {
+    checkoutBtn.textContent = "Sin envío a tu zona";
+  } else {
+    checkoutBtn.textContent = "Pagar ahora";
+  }
 }
 
 // ---- Drawer ----
@@ -449,15 +482,19 @@ function renderShippingSummary() {
     el.style.display = "none";
     return;
   }
-  el.style.display = "block";
+el.style.display = "block";
   if (!shipping) {
     infoEl.innerHTML = "Selecciona tu comuna o marca tu dirección en el mapa para calcular el costo de envío.";
+    return;
+  }
+  if (shipping.noDelivery) {
+    infoEl.innerHTML = `<strong style="color:#A8432F;">No hacemos envíos a más de 30 km.</strong> Puedes elegir retiro en tienda.`;
     return;
   }
   if (shipping.price === 0) {
     infoEl.innerHTML = `<strong>Retiro en tienda</strong> · sin costo`;
   } else {
-    infoEl.innerHTML = `<strong>${money(shipping.price)}</strong> · ${shipping.label} (${shipping.zone})`;
+    infoEl.innerHTML = `<strong>${money(shipping.price)}</strong> · ${shipping.label} (${shipping.zone})<br><span style="font-size:11.5px;color:var(--ink-soft);">Entrega estimada: ${DELIVERY_TIME}</span>`;
   }
 }
 
@@ -489,8 +526,12 @@ document.getElementById("checkout-form").addEventListener("submit", async (e) =>
     return;
   }
 
-  if (!isPickup && !shipping) {
+if (!isPickup && !shipping) {
     note.textContent = "Selecciona tu comuna o marca tu dirección en el mapa para calcular el envío.";
+    return;
+  }
+  if (!isPickup && shipping?.noDelivery) {
+    note.textContent = "No hacemos envíos a más de 30 km. Elige retiro en tienda o una dirección más cercana.";
     return;
   }
 

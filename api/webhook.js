@@ -58,9 +58,9 @@ const shippingText = isPickup
         <ul>${itemsList}</ul>
         <p><strong>Envío:</strong> ${shippingText}</p>
         <p><strong>Total pagado:</strong> $${Number(payment.transaction_amount).toLocaleString("es-CL")}</p>
-        <p>${isPickup
+<p>${isPickup
           ? `Te esperamos en ${meta.address || "nuestra tienda"}. Coordinamos el retiro por correo o WhatsApp cuando esté listo.`
-          : `Lo vamos a despachar a: ${meta.address || ""}, ${meta.comuna || ""}. Tiempo estimado: 2 a 4 días hábiles.`}</p>
+          : `Lo vamos a despachar a: ${meta.address || ""}, ${meta.comuna || ""}. Tiempo estimado de entrega: 1 a 30 minutos desde el pedido.`}</p>
         <p>Cualquier duda, responde este correo.</p>
       `,
     });

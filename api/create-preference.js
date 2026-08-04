@@ -17,11 +17,10 @@ const ORIGEN_LNG = -72.874869;
 // y desgaste del vehículo. El despacho siempre se cobra; el retiro es gratis.
 const SHIPPING_ZONES = [
   { maxKm: 8, price: 2990 },
-  { maxKm: 20, price: 4990 },
-  { maxKm: 40, price: 7990 },
-  { maxKm: 100, price: 14990 },
-  { maxKm: Infinity, price: 29990 },
+  { maxKm: 15, price: 4990 },
 ];
+const PRICE_15_20 = 7000; // km 15-20
+const MAX_DELIVERY_KM = 30; // no se despacha más allá de 30 km
 
 function distanceKm(lat1, lng1, lat2, lng2) {
   const R = 6371;
@@ -38,10 +37,15 @@ function distanceKm(lat1, lng1, lat2, lng2) {
 function calculateShipping(isPickup, lat, lng) {
   if (isPickup) return 0;
   const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, Number(lat), Number(lng));
+  // Más de 30 km: no se hace envío.
+  if (dist > MAX_DELIVERY_KM) return null;
+  // 20-30 km: precio x3.
+  if (dist > 20) return 21000;
+  // 15-20 km: $7.000.
+  if (dist > 15) return PRICE_15_20;
+  // Hasta 15 km: precio base por zona.
   const zone = SHIPPING_ZONES.find((z) => dist <= z.maxKm);
-  // Para distancias > 28 km se cobra el TRIPLE (x3): considera el viaje de
-  // vuelta y los peajes que puede haber en la ruta.
-  return dist > 28 ? zone.price * 3 : zone.price;
+  return zone.price;
 }
 
 module.exports = async (req, res) => {
@@ -88,7 +92,10 @@ module.exports = async (req, res) => {
 // Costo de envío calculado SIEMPRE en el servidor (nunca se confía en el
     // navegador). Retiro en tienda = 0. Despacho: se calcula por distancia
     // real desde Puerto Montt, así nada es gratis sin justificación.
-    const shipping = calculateShipping(isPickup, lat, lng);
+const shipping = calculateShipping(isPickup, lat, lng);
+    if (!isPickup && shipping === null) {
+      return res.status(400).json({ error: "No hacemos envíos a más de 30 km. Elige retiro en tienda o una dirección más cercana." });
+    }
 
     const mpItems = items.map((p) => ({
       id: p.id,
