@@ -14,14 +14,12 @@ const STORE_ADDRESS = "Taller Pintura y Desabolladura Fernando Olea, Puerto Mont
 // y el desgaste del vehículo. Retiro en tienda es gratis; el despacho
 // siembre se cobra según la distancia desde Puerto Montt.
 // Reglas:
-//  - Hasta 15 km: precio base por zona.
-//  - 15-20 km: $7.000.
-//  - 20-30 km: precio x3 ($21.000).
-//  - Más de 30 km: NO se hace envío.
+//  - Envío progresivo: $5.000 (cerca) → $7.000 (a los 15 km).
+//  - Más de 25 km: NO se hace envío.
 const MIN_SHIPPING = 5000; // envío mínimo (cerca del origen)
 const MAX_SHIPPING = 7000; // envío máximo (a partir de los 15 km)
 const FULL_PRICE_KM = 15; // a esta distancia se alcanza el precio máximo de $7.000
-const MAX_DELIVERY_KM = 30; // no se despacha más allá de 30 km
+const MAX_DELIVERY_KM = 25; // no se despacha más allá de 25 km
 const DELIVERY_TIME = "una hora y media"; // entrega estimada desde el pedido
 
 let deliveryMode = "delivery"; // "delivery" | "pickup"
@@ -470,7 +468,7 @@ el.style.display = "block";
     return;
   }
   if (shipping.noDelivery) {
-    infoEl.innerHTML = `<strong style="color:#A8432F;">No hacemos envíos a más de 30 km.</strong> Puedes elegir retiro en tienda.`;
+infoEl.innerHTML = `<strong style="color:#A8432F;">No hacemos envíos a más de 25 km.</strong> Puedes elegir retiro en tienda.`;
     return;
   }
   if (shipping.price === 0) {
@@ -513,7 +511,7 @@ if (!isPickup && !shipping) {
     return;
   }
   if (!isPickup && shipping?.noDelivery) {
-    note.textContent = "No hacemos envíos a más de 30 km. Elige retiro en tienda o una dirección más cercana.";
+note.textContent = "No hacemos envíos a más de 25 km. Elige retiro en tienda o una dirección más cercana.";
     return;
   }
 

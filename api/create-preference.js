@@ -18,7 +18,7 @@ const ORIGEN_LNG = -72.874869;
 const MIN_SHIPPING = 5000; // envío mínimo (cerca del origen)
 const MAX_SHIPPING = 7000; // envío máximo (a partir de los 15 km)
 const FULL_PRICE_KM = 15; // a esta distancia se alcanza el precio máximo de $7.000
-const MAX_DELIVERY_KM = 30; // no se despacha más allá de 30 km
+const MAX_DELIVERY_KM = 25; // no se despacha más allá de 25 km
 
 function distanceKm(lat1, lng1, lat2, lng2) {
   const R = 6371;
@@ -90,7 +90,7 @@ module.exports = async (req, res) => {
     // real desde Puerto Montt, así nada es gratis sin justificación.
 const shipping = calculateShipping(isPickup, lat, lng);
     if (!isPickup && shipping === null) {
-      return res.status(400).json({ error: "No hacemos envíos a más de 30 km. Elige retiro en tienda o una dirección más cercana." });
+return res.status(400).json({ error: "No hacemos envíos a más de 25 km. Elige retiro en tienda o una dirección más cercana." });
     }
 
     const mpItems = items.map((p) => ({
