@@ -36,11 +36,9 @@ module.exports = async (req, res) => {
 
     const isPickup = meta.delivery_mode === "pickup";
     const shippingPrice = Number(meta.shipping_price) || 0;
-    const shippingText = isPickup
+const shippingText = isPickup
       ? "Retiro en tienda (sin costo)"
-      : shippingPrice > 0
-        ? `Despacho a domicilio — $${shippingPrice.toLocaleString("es-CL")}`
-        : "Despacho a domicilio — envío gratis";
+      : `Despacho a domicilio — $${shippingPrice.toLocaleString("es-CL")}`;
 
     const wazeLink =
       meta.lat && meta.lng

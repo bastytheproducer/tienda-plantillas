@@ -7,14 +7,16 @@ let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 const ORIGEN_LAT = -41.4692;
 const ORIGEN_LNG = -72.9392;
 const STORE_ADDRESS = "Pasaje Tres Volcanes 30, Puerto Montt";
-const FREE_SHIPPING_MIN = 25000; // envío gratis si el subtotal supera este monto
 
+// Precios de envío calculados para cubrir la bencina ($1.478/L, ~10 km/L)
+// y el desgaste del vehículo. Retiro en tienda es gratis; el despacho
+// siembre se cobra según la distancia desde Puerto Montt.
 const SHIPPING_ZONES = [
-  { maxKm: 8, label: "Puerto Montt", price: 0 },        // Zona 1 — GRATIS local
-  { maxKm: 20, label: "Puerto Varas / Llanquihue", price: 2490 },
-  { maxKm: 40, label: "Frutillar / Calbuco", price: 3990 },
-  { maxKm: 100, label: "Resto Los Lagos", price: 5990 },
-  { maxKm: Infinity, label: "Resto de Chile", price: 9990 },
+  { maxKm: 8, label: "Puerto Montt", price: 2990 },
+  { maxKm: 20, label: "Puerto Varas / Llanquihue", price: 4990 },
+  { maxKm: 40, label: "Frutillar / Calbuco", price: 7990 },
+  { maxKm: 100, label: "Resto Los Lagos", price: 14990 },
+  { maxKm: Infinity, label: "Resto de Chile", price: 29990 },
 ];
 
 let deliveryMode = "delivery"; // "delivery" | "pickup"
@@ -48,14 +50,11 @@ function getShippingInfo() {
   }
   const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, deliveryLat, deliveryLng);
   const zone = SHIPPING_ZONES.find((z) => dist <= z.maxKm);
-  const freeByAmount = getCartSubtotal() >= FREE_SHIPPING_MIN;
-  const price = freeByAmount || zone.price === 0 ? 0 : zone.price;
   return {
-    price,
+    price: zone.price,
     label: zone.label,
     zone: `~${Math.round(dist)} km desde ${STORE_ADDRESS}`,
     distanceKm: Math.round(dist),
-    freeByAmount,
   };
 }
 
@@ -167,7 +166,7 @@ function renderCart() {
 
   if (subtotalEl) subtotalEl.textContent = money(subtotal);
   if (shippingEl) {
-    if (shipping && (shipping.price === 0 || shipping.freeByAmount || deliveryMode === "pickup")) {
+    if (shipping && (shipping.price === 0 || deliveryMode === "pickup")) {
       shippingEl.textContent = "Gratis";
     } else if (shipping) {
       shippingEl.textContent = money(shippingPrice);
@@ -450,16 +449,11 @@ function renderShippingSummary() {
     infoEl.innerHTML = "Selecciona tu comuna o marca tu dirección en el mapa para calcular el costo de envío.";
     return;
   }
-  const freeByAmount = getCartSubtotal() >= FREE_SHIPPING_MIN;
-  let line;
   if (shipping.price === 0) {
-    line = `<strong>Envío gratis</strong> · ${shipping.label} (${shipping.zone})`;
-  } else if (freeByAmount) {
-    line = `<strong>Envío gratis</strong> por superar $${FREE_SHIPPING_MIN.toLocaleString("es-CL")} · ${shipping.label}`;
+    infoEl.innerHTML = `<strong>Retiro en tienda</strong> · sin costo`;
   } else {
-    line = `<strong>${money(shipping.price)}</strong> · ${shipping.label} (${shipping.zone})`;
+    infoEl.innerHTML = `<strong>${money(shipping.price)}</strong> · ${shipping.label} (${shipping.zone})`;
   }
-  infoEl.innerHTML = line;
 }
 
 // ---- Checkout ----

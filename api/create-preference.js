@@ -7,13 +7,46 @@
 const { MercadoPagoConfig, Preference } = require("mercadopago");
 const { getProducts } = require("../lib/kv");
 
+// Origen de la tienda (Barril & Miel, Puerto Montt).
+const ORIGEN_LAT = -41.4692;
+const ORIGEN_LNG = -72.9392;
+
+// Zonas de envío: precios calculados para cubrir bencina ($1.478/L, ~10 km/L)
+// y desgaste del vehículo. El despacho siempre se cobra; el retiro es gratis.
+const SHIPPING_ZONES = [
+  { maxKm: 8, price: 2990 },
+  { maxKm: 20, price: 4990 },
+  { maxKm: 40, price: 7990 },
+  { maxKm: 100, price: 14990 },
+  { maxKm: Infinity, price: 29990 },
+];
+
+function distanceKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function calculateShipping(isPickup, lat, lng) {
+  if (isPickup) return 0;
+  const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, Number(lat), Number(lng));
+  const zone = SHIPPING_ZONES.find((z) => dist <= z.maxKm);
+  return zone.price;
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método no permitido" });
   }
 
-try {
-    const { productIds, name, email, phone, address, comuna, lat, lng, ageConfirmed, deliveryMode, shippingPrice } = req.body;
+  try {
+    const { productIds, name, email, phone, address, comuna, lat, lng, ageConfirmed, deliveryMode } = req.body;
 
     if (!Array.isArray(productIds) || productIds.length === 0) {
       return res.status(400).json({ error: "Carrito vacío" });
@@ -48,9 +81,10 @@ try {
       return res.status(400).json({ error: "Productos no válidos" });
     }
 
-    // Costo de envío validado en el servidor (nunca se confía en el navegador).
-    // Retiro en tienda = 0. Despacho: se calcula por distancia desde Puerto Montt.
-    const shipping = isPickup ? 0 : Math.max(0, Number(shippingPrice) || 0);
+// Costo de envío calculado SIEMPRE en el servidor (nunca se confía en el
+    // navegador). Retiro en tienda = 0. Despacho: se calcula por distancia
+    // real desde Puerto Montt, así nada es gratis sin justificación.
+    const shipping = calculateShipping(isPickup, lat, lng);
 
     const mpItems = items.map((p) => ({
       id: p.id,
