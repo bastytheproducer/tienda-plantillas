@@ -12,13 +12,14 @@ con retiro en tienda gratis y estrategias de enganche justas.
 - [x] 4. `create-preference.js`: agregar el costo de envío como ítem del pago y guardarlo en metadata.
 - [x] 5. `webhook.js`: mostrar el costo de envío en los correos y WhatsApp.
 - [x] 6. Commit + push a GitHub y verificación en producción. (commit `73d0bbf`)
+- [x] 7. Subir precios de envío para cubrir bencina ($1.478/L, ~10 km/L) y desgaste del vehículo. Eliminar envíos gratis. (commit `df4527a`)
 
 ## Reglas de envío
 - Retiro en tienda → $0 (gratis). Dirección: Puerto Montt, Pasaje Tres Volcanes 30.
-- Despacho a domicilio → según zona de distancia desde Puerto Montt:
-  - Z1: 0–8 km → $1.990
-  - Z2: 8–20 km → $3.490
-  - Z3: 20–40 km → $4.990
-  - Z4: 40–100 km → $6.990
-  - Z5: +100 km → $9.990
-- Envío GRATIS si el subtotal supera $25.000 (despacho).
+- Despacho a domicilio → según zona de distancia desde Puerto Montt (todo se cobra):
+  - Z1: 0–8 km → $2.990
+  - Z2: 8–20 km → $4.990
+  - Z3: 20–40 km → $7.990
+  - Z4: 40–100 km → $14.990
+  - Z5: +100 km → $29.990
+- No hay envío gratis por monto: el despacho siempre se cobra según la distancia.
