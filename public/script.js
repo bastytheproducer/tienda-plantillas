@@ -14,11 +14,13 @@ const STORE_ADDRESS = "Taller Pintura y Desabolladura Fernando Olea, Puerto Mont
 // y el desgaste del vehículo. Retiro en tienda es gratis; el despacho
 // siembre se cobra según la distancia desde Puerto Montt.
 // Reglas:
-//  - Envío progresivo: $5.000 (cerca) → $7.000 (a los 15 km).
+//  - Envío progresivo: $5.000 (cerca) → $7.000 (a los 15 km) → $21.000 (a los 25 km).
 //  - Más de 25 km: NO se hace envío.
 const MIN_SHIPPING = 5000; // envío mínimo (cerca del origen)
-const MAX_SHIPPING = 7000; // envío máximo (a partir de los 15 km)
-const FULL_PRICE_KM = 15; // a esta distancia se alcanza el precio máximo de $7.000
+const TIER1_MAX = 7000; // a los 15 km se alcanza este precio
+const TIER1_KM = 15; // distancia donde el precio llega a $7.000
+const TIER2_MAX = 21000; // a los 25 km se alcanza este precio
+const TIER2_KM = 25; // distancia donde el precio llega a $21.000
 const MAX_DELIVERY_KM = 25; // no se despacha más allá de 25 km
 const DELIVERY_TIME = "una hora y media"; // entrega estimada desde el pedido
 
@@ -52,14 +54,22 @@ if (deliveryLat == null || deliveryLng == null) {
     return null; // aún no hay ubicación
   }
 const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, deliveryLat, deliveryLng);
-  // Más de 30 km: no se hace envío.
+  // Más de 25 km: no se hace envío.
   if (dist > MAX_DELIVERY_KM) {
     return { noDelivery: true, distanceKm: Math.round(dist) };
   }
-  // Precio progresivo: desde $5.000 (cerca del origen) hasta $7.000 a los
-  // 15 km. Se redondea al múltiplo de $100 más cercano para montos claros.
-  const ratio = Math.min(dist / FULL_PRICE_KM, 1);
-  const price = Math.round((MIN_SHIPPING + (MAX_SHIPPING - MIN_SHIPPING) * ratio) / 100) * 100;
+  // Progresión en dos tramos:
+  //  - Tramo 1: $5.000 (cerca) → $7.000 a los 15 km.
+  //  - Tramo 2: $7.000 → $21.000 desde 15 km hasta 25 km.
+  // Se redondea al múltiplo de $100 más cercano para montos claros.
+  const price = (() => {
+    if (dist <= TIER1_KM) {
+      const ratio = dist / TIER1_KM;
+      return Math.round((MIN_SHIPPING + (TIER1_MAX - MIN_SHIPPING) * ratio) / 100) * 100;
+    }
+    const ratio = (dist - TIER1_KM) / (TIER2_KM - TIER1_KM);
+    return Math.round((TIER1_MAX + (TIER2_MAX - TIER1_MAX) * ratio) / 100) * 100;
+  })();
   return {
     price,
     label: "Despacho a domicilio",
