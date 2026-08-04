@@ -48,10 +48,13 @@ function getShippingInfo() {
   if (deliveryLat == null || deliveryLng == null) {
     return null; // aún no hay ubicación
   }
-  const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, deliveryLat, deliveryLng);
+const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, deliveryLat, deliveryLng);
   const zone = SHIPPING_ZONES.find((z) => dist <= z.maxKm);
+  // Para distancias > 28 km se cobra el TRIPLE (x3): considera el viaje de
+  // vuelta y posibles peajes en la ruta.
+  const price = dist > 28 ? zone.price * 3 : zone.price;
   return {
-    price: zone.price,
+    price,
     label: zone.label,
     zone: `~${Math.round(dist)} km desde ${STORE_ADDRESS}`,
     distanceKm: Math.round(dist),

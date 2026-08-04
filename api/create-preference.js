@@ -37,7 +37,9 @@ function calculateShipping(isPickup, lat, lng) {
   if (isPickup) return 0;
   const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, Number(lat), Number(lng));
   const zone = SHIPPING_ZONES.find((z) => dist <= z.maxKm);
-  return zone.price;
+  // Para distancias > 28 km se cobra el TRIPLE (x3): considera el viaje de
+  // vuelta y los peajes que puede haber en la ruta.
+  return dist > 28 ? zone.price * 3 : zone.price;
 }
 
 module.exports = async (req, res) => {
