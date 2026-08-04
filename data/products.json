@@ -19,15 +19,15 @@
     "tagline": "Liviana, dorada y crocante. La de siempre, hecha con calma.",
     "image": "images/lager.png"
   },
-  {
-    "id": "apa-lupulada",
-    "name": "APA Lupulada",
-    "style": "American Pale Ale",
-    "abv": "5.8% alc/vol",
+{
+    "id": "ipa-lupada",
+    "name": "IPA Lupulada",
+    "style": "American IPA",
+    "abv": "6.2% alc/vol",
     "volume": "330 cc",
     "price": 4490,
     "tagline": "Cítrica y resinosa, para quienes buscan el golpe de lúpulo.",
-    "image": "images/apa.png"
+    "image": "images/ipa.png"
   },
   {
     "id": "hidromiel-tradicional",
