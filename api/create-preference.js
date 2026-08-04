@@ -8,8 +8,10 @@ const { MercadoPagoConfig, Preference } = require("mercadopago");
 const { getProducts } = require("../lib/kv");
 
 // Origen de la tienda (Barril & Miel, Puerto Montt).
-const ORIGEN_LAT = -41.4692;
-const ORIGEN_LNG = -72.9392;
+// Referencia de origen: Taller Pintura y Desabolladura Fernando Olea
+// (Google Maps: -41.41005, -72.874869)
+const ORIGEN_LAT = -41.41005;
+const ORIGEN_LNG = -72.874869;
 
 // Zonas de envío: precios calculados para cubrir bencina ($1.478/L, ~10 km/L)
 // y desgaste del vehículo. El despacho siempre se cobra; el retiro es gratis.

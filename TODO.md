@@ -14,9 +14,10 @@ con retiro en tienda gratis y estrategias de enganche justas.
 - [x] 6. Commit + push a GitHub y verificación en producción. (commit `73d0bbf`)
 - [x] 7. Subir precios de envío para cubrir bencina ($1.478/L, ~10 km/L) y desgaste del vehículo. Eliminar envíos gratis. (commit `df4527a`)
 - [x] 8. Para distancias > 28 km, cobrar el triple (x3) del precio de zona por el viaje de vuelta y posibles peajes. (commit `ec4f2a9`)
+- [x] 9. Corregir el origen del envío: ahora se usa el "Taller Pintura y Desabolladura Fernando Olea" (~ -41.41005, -72.874869) como referencia desde Google Maps. (commit `d3f5b2c`)
 
 ## Reglas de envío
-- Retiro en tienda → $0 (gratis). Dirección: Puerto Montt, Pasaje Tres Volcanes 30.
+- Retiro en tienda → $0 (gratis). Dirección: Puerto Montt, Taller Pintura y Desabolladura Fernando Olea.
 - Despacho a domicilio → según zona de distancia desde Puerto Montt (todo se cobra):
   - Z1: 0–8 km → $2.990
   - Z2: 8–20 km → $4.990
