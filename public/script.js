@@ -4,11 +4,9 @@ let PRODUCTS = [];
 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
 // ---- Costos de envío (Barril & Miel, origen: Puerto Montt) ----
-// Referencia de origen: Taller Pintura y Desabolladura Fernando Olea
-// (Google Maps: -41.41005, -72.874869)
 const ORIGEN_LAT = -41.41005;
 const ORIGEN_LNG = -72.874869;
-const STORE_ADDRESS = "Taller Pintura y Desabolladura Fernando Olea, Puerto Montt";
+const STORE_ADDRESS = "Barril & Miel";
 
 // Precios de envío calculados para cubrir la bencina ($1.478/L, ~10 km/L)
 // y el desgaste del vehículo. Retiro en tienda es gratis; el despacho
@@ -48,7 +46,7 @@ function getCartSubtotal() {
 
 function getShippingInfo() {
   if (deliveryMode === "pickup") {
-return { price: 0, label: "Retiro en tienda", zone: "Retiro gratis en Taller Pintura y Desabolladura Fernando Olea, Puerto Montt" };
+return { price: 0, label: "Retiro en tienda", zone: "Retiro gratis en Barril & Miel" };
   }
 if (deliveryLat == null || deliveryLng == null) {
     return null; // aún no hay ubicación

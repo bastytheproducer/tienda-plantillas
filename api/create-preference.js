@@ -8,8 +8,6 @@ const { MercadoPagoConfig, Preference } = require("mercadopago");
 const { getProducts } = require("../lib/kv");
 
 // Origen de la tienda (Barril & Miel, Puerto Montt).
-// Referencia de origen: Taller Pintura y Desabolladura Fernando Olea
-// (Google Maps: -41.41005, -72.874869)
 const ORIGEN_LAT = -41.41005;
 const ORIGEN_LNG = -72.874869;
 
