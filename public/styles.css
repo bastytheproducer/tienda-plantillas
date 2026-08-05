@@ -97,14 +97,21 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-0.01em;color:v
 }
 .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr;gap:56px;align-items:center;justify-items:start;}
 .hero-copy h1{font-size:44px;line-height:1.08;margin-bottom:8px;}
+.hero-sub{font-size:16px;color:var(--paper-dim);max-width:46ch;margin-bottom:12px;}
 .hero-tagline{
   font-family:var(--mono);
-  font-size:14px;
+  font-size:13px;
   letter-spacing:0.04em;
   color:var(--copper-bright);
+  margin-bottom:10px;
+}
+.hero-modes{
+  font-size:14px;
+  font-weight:600;
+  color:var(--paper);
   margin-bottom:20px;
 }
-.hero-sub{font-size:16px;color:var(--paper-dim);max-width:46ch;margin-bottom:20px;}
+.hero-modes span{color:var(--copper-bright);}
 .hero-logo{
   display:block;
   max-width:280px;
