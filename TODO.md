@@ -12,4 +12,4 @@ y las imágenes del catálogo, y agregar un toggle de disponibilidad en el admin
 - [x] 5. Agregar campo `available` en `data/products.json`
 - [x] 6. Agregar botón de disponibilidad (verde/rojo) en el admin
 - [x] 7. Ocultar productos no disponibles en la tienda (`script.js`)
-- [ ] 8. Commit + push a GitHub
+- [x] 8. Commit + push a GitHub (commit `3fef758`)
