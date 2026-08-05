@@ -3,10 +3,10 @@ const money = (n) => "$" + Math.round(n).toLocaleString("es-CL");
 let PRODUCTS = [];
 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-// ---- Costos de envío (Barril & Miel, origen: Puerto Montt) ----
+// ---- Costos de envío (Bees and Beers, origen: Puerto Montt) ----
 const ORIGEN_LAT = -41.41005;
 const ORIGEN_LNG = -72.874869;
-const STORE_ADDRESS = "Barril & Miel";
+const STORE_ADDRESS = "Bees and Beers";
 
 // Precios de envío calculados para cubrir la bencina ($1.478/L, ~10 km/L)
 // y el desgaste del vehículo. Retiro en tienda es gratis; el despacho
@@ -43,13 +43,14 @@ function distanceKm(lat1, lng1, lat2, lng2) {
 function getCartSubtotal() {
   return cart.reduce((sum, id) => {
     const p = PRODUCTS.find((x) => x.id === id);
-    return sum + (p ? p.price : 0);
+    // Solo suma productos disponibles (si un producto se desactivó, se ignora).
+    return sum + (p && p.available !== false ? p.price : 0);
   }, 0);
 }
 
 function getShippingInfo() {
   if (deliveryMode === "pickup") {
-return { price: 0, label: "Retiro en tienda", zone: "Retiro gratis en Barril & Miel" };
+return { price: 0, label: "Retiro en tienda", zone: "Retiro gratis en Bees and Beers" };
   }
 if (deliveryLat == null || deliveryLng == null) {
     return null; // aún no hay ubicación
@@ -113,8 +114,11 @@ document.getElementById("age-yes").addEventListener("click", () => {
 // ---- Render catálogo ----
 function renderProducts() {
   const grid = document.getElementById("product-grid");
-  grid.innerHTML = PRODUCTS.map(
-    (p) => `
+  // Solo se muestran los productos disponibles (available !== false).
+  const visible = PRODUCTS.filter((p) => p.available !== false);
+  grid.innerHTML = visible
+    .map(
+      (p) => `
     <article class="card">
       ${p.image ? `<div class="card-img"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>` : ""}
       <span class="card-style">${p.style} · ${p.volume}</span>
@@ -126,7 +130,11 @@ function renderProducts() {
         <button class="card-add" data-id="${p.id}">Agregar</button>
       </div>
     </article>`
-  ).join("");
+    )
+    .join("");
+  if (visible.length === 0) {
+    grid.innerHTML = '<p class="card-empty">Por ahora no hay productos disponibles.</p>';
+  }
 
   grid.querySelectorAll(".card-add").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -164,9 +172,10 @@ function renderCart() {
   const counts = {};
   cart.forEach((id) => (counts[id] = (counts[id] || 0) + 1));
 
-  const rows = Object.entries(counts).map(([id, qty]) => {
+const rows = Object.entries(counts).map(([id, qty]) => {
     const p = PRODUCTS.find((x) => x.id === id);
-    if (!p) return "";
+    // Si el producto ya no está disponible, se omite del carrito.
+    if (!p || p.available === false) return "";
     return `
     <div class="cart-item">
       ${p.image ? `<div class="cart-item-img"><img src="${p.image}" alt="${p.name}"></div>` : ""}

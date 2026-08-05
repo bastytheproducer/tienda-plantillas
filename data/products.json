@@ -7,7 +7,8 @@
     "volume": "330 cc",
     "price": 3990,
     "tagline": "Maltosa y con notas a caramelo, lúpulo justo para no tapar el cuerpo.",
-    "image": "images/ale-ambar.png"
+    "image": "images/ale-ambar.png",
+    "available": true
   },
   {
     "id": "lager-clasica",
@@ -17,7 +18,8 @@
     "volume": "330 cc",
     "price": 3490,
     "tagline": "Liviana, dorada y crocante. La de siempre, hecha con calma.",
-    "image": "images/lager.png"
+    "image": "images/lager.png",
+    "available": true
   },
   {
     "id": "ipa-lupada",
@@ -27,7 +29,8 @@
     "volume": "330 cc",
     "price": 4490,
     "tagline": "Cítrica y resinosa, para quienes buscan el golpe de lúpulo.",
-    "image": "images/ipa.png"
+    "image": "images/ipa.png",
+    "available": true
   },
   {
     "id": "apa-clasica",
@@ -37,7 +40,8 @@
     "volume": "330 cc",
     "price": 4490,
     "tagline": "Equilibrada, con cuerpo medio y lúpulo aromático.",
-    "image": "images/apa.png"
+    "image": "images/apa.png",
+    "available": true
   },
   {
     "id": "hidromiel-tradicional",
@@ -47,6 +51,7 @@
     "volume": "330 cc",
     "price": 6990,
     "tagline": "Fermentada con miel pura, sin especias. El sabor de la miel, sin más.",
-    "image": "images/hidromiel.png"
+    "image": "images/hidromiel.png",
+    "available": true
   }
 ]

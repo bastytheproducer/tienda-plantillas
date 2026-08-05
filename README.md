@@ -1,4 +1,4 @@
-# Barril & Miel — Tienda de cerveza artesanal e hidromiel
+# Bees and Beers — Tienda de cerveza artesanal e hidromiel
 
 Sitio completo: catálogo, carrito, checkout con Mercado Pago (tarjetas,
 transferencia y otros medios) y aviso automático por correo cuando se

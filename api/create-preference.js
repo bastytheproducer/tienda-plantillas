@@ -7,7 +7,7 @@
 const { MercadoPagoConfig, Preference } = require("mercadopago");
 const { getProducts } = require("../lib/kv");
 
-// Origen de la tienda (Barril & Miel, Puerto Montt).
+// Origen de la tienda (Bees and Beers, Puerto Montt).
 const ORIGEN_LAT = -41.41005;
 const ORIGEN_LNG = -72.874869;
 
@@ -88,10 +88,11 @@ module.exports = async (req, res) => {
     const counts = {};
     productIds.forEach((id) => (counts[id] = (counts[id] || 0) + 1));
 
-    const items = Object.entries(counts)
+const items = Object.entries(counts)
       .map(([id, qty]) => {
         const p = products.find((x) => x.id === id);
-        return p ? { ...p, quantity: qty } : null;
+        // Solo se pueden comprar productos disponibles (available !== false).
+        return p && p.available !== false ? { ...p, quantity: qty } : null;
       })
       .filter(Boolean);
 

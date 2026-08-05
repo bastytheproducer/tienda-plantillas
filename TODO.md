@@ -1,28 +1,15 @@
-# TODO — Costo de envío según domicilio (Barril & Miel)
+# TODO — Bees and Beers (cambio de marca + disponibilidad)
 
 ## Objetivo
-Agregar el costo de envío al carrito según la comuna/dirección del cliente,
-con retiro en tienda gratis y estrategias de enganche justas.
+Renombrar la tienda de "Barril & Miel" a "Bees and Beers", actualizar el logo
+y las imágenes del catálogo, y agregar un toggle de disponibilidad en el admin.
 
-## Estado: en progreso
-
-- [x] 1. `script.js`: agregar selector Retiro/Despacho y cálculo de envío por zona (Haversine desde Puerto Montt).
-- [x] 2. `index.html`: agregar selector de modo de entrega y bloque de resumen de envío.
-- [x] 3. `styles.css`: estilos para el selector y el resumen de envío.
-- [x] 4. `create-preference.js`: agregar el costo de envío como ítem del pago y guardarlo en metadata.
-- [x] 5. `webhook.js`: mostrar el costo de envío en los correos y WhatsApp.
-- [x] 6. Commit + push a GitHub y verificación en producción. (commit `73d0bbf`)
-- [x] 7. Subir precios de envío para cubrir bencina ($1.478/L, ~10 km/L) y desgaste del vehículo. Eliminar envíos gratis. (commit `df4527a`)
-- [x] 8. Para distancias > 28 km, cobrar el triple (x3) del precio de zona por el viaje de vuelta y posibles peajes. (commit `ec4f2a9`)
-- [x] 9. Corregir el origen del envío: ahora se usa el "Taller Pintura y Desabolladura Fernando Olea" (~ -41.41005, -72.874869) como referencia desde Google Maps. (commit `d3f5b2c`)
-
-## Reglas de envío
-- Retiro en tienda → $0 (gratis). Dirección: Puerto Montt, Taller Pintura y Desabolladura Fernando Olea.
-- Despacho a domicilio → según zona de distancia desde Puerto Montt (todo se cobra):
-  - Z1: 0–8 km → $2.990
-  - Z2: 8–20 km → $4.990
-  - Z3: 20–40 km → $7.990 (×3 = $23.970 si > 28 km)
-  - Z4: 40–100 km → $14.990 (×3 = $44.970)
-  - Z5: +100 km → $29.990 (×3 = $89.970)
-- Para distancias > 28 km, el precio de la zona se multiplica por 3 (x3), por el viaje de vuelta y posibles peajes.
-- No hay envío gratis por monto: el despacho siempre se cobra según la distancia.
+## Pasos
+- [x] 1. Copiar nuevo logo a `public/images/logo.png`
+- [x] 2. Copiar `cerveza lager.png` → `public/images/lager.png`
+- [x] 3. Copiar `hidromiel 2.png` → `public/images/hidromiel.png`
+- [x] 4. Reemplazar "Barril & Miel" por "Bees and Beers" en todos los archivos
+- [x] 5. Agregar campo `available` en `data/products.json`
+- [x] 6. Agregar botón de disponibilidad (verde/rojo) en el admin
+- [x] 7. Ocultar productos no disponibles en la tienda (`script.js`)
+- [ ] 8. Commit + push a GitHub

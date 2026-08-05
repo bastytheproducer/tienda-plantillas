@@ -51,7 +51,7 @@ const shippingText = isPickup
     await resend.emails.send({
       from: process.env.FROM_EMAIL,
       to: meta.email || payment.payer?.email,
-      subject: "Confirmamos tu pedido — Barril & Miel",
+subject: "Confirmamos tu pedido — Bees and Beers",
       html: `
         <p>Gracias por tu compra, ${meta.name || ""}.</p>
         <p>Tu pedido:</p>

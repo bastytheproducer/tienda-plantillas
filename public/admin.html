@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Barril & Miel</title>
+<title>Admin — Bees and Beers</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
@@ -25,8 +25,11 @@
   th{text-align:left;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--ink-soft);padding:8px 6px;border-bottom:1px solid rgba(43,27,18,0.15);}
   td{padding:10px 6px;border-bottom:1px solid rgba(43,27,18,0.08);vertical-align:top;}
   .row-actions button{background:none;border:none;cursor:pointer;font-size:12px;text-decoration:underline;margin-right:10px;}
-  .edit-btn{color:var(--ink);}
+.edit-btn{color:var(--ink);}
   .del-btn{color:#A8432F;}
+  .avail-btn{border:none;border-radius:var(--radius);padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+  .avail-on{background:#2F6B4F;color:#fff;}
+  .avail-off{background:#A8432F;color:#fff;}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   .form-grid .full{grid-column:1 / -1;}
   .status-approved{color:#2F6B4F;font-weight:600;}
@@ -38,7 +41,7 @@
 
 <div id="login-view" class="admin-login">
   <h1>Panel admin</h1>
-  <p>Barril &amp; Miel — acceso privado</p>
+<p>Bees and Beers — acceso privado</p>
   <div class="field">
     <label>Usuario</label>
     <input type="text" id="login-user" autocomplete="username">
@@ -53,7 +56,7 @@
 
 <div id="admin-view" class="admin-wrap" style="display:none;">
   <div class="admin-header">
-    <h1>Panel admin — Barril &amp; Miel</h1>
+<h1>Panel admin — Bees and Beers</h1>
     <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
   </div>
 
@@ -71,7 +74,13 @@
       <div class="field"><label>Estilo</label><input type="text" id="p-style" placeholder="American IPA, Hidromiel seco..." required></div>
       <div class="field"><label>Graduación alcohólica</label><input type="text" id="p-abv" placeholder="5.4% alc/vol"></div>
       <div class="field"><label>Volumen</label><input type="text" id="p-volume" placeholder="500 ml" required></div>
-      <div class="field"><label>Precio (CLP)</label><input type="number" id="p-price" required></div>
+<div class="field"><label>Precio (CLP)</label><input type="number" id="p-price" required></div>
+      <div class="field"><label>Disponible</label>
+        <select id="p-available">
+          <option value="true">Sí, disponible</option>
+          <option value="false">No disponible</option>
+        </select>
+      </div>
       <div class="field full"><label>Descripción corta</label><input type="text" id="p-tagline"></div>
       <div class="full" style="display:flex;gap:10px;">
         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -83,7 +92,7 @@
   <div class="panel">
     <h2>Catálogo actual</h2>
     <table>
-      <thead><tr><th>Nombre</th><th>Estilo</th><th>Volumen</th><th>Precio</th><th></th></tr></thead>
+<thead><tr><th>Nombre</th><th>Estilo</th><th>Volumen</th><th>Precio</th><th>Disponible</th><th></th></tr></thead>
       <tbody id="product-table"></tbody>
     </table>
   </div>

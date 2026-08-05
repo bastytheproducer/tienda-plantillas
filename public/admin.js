@@ -67,7 +67,8 @@ async function loadProducts() {
   await refreshKvStatus(editable);
   document.querySelector("#product-form button[type=submit]").disabled = !editable;
 
-  const tbody = document.getElementById("product-table");
+const tbody = document.getElementById("product-table");
+  const avail = (p) => p.available !== false;
   tbody.innerHTML = products
     .map(
       (p) => `
@@ -76,6 +77,11 @@ async function loadProducts() {
       <td>${p.style || "-"}</td>
       <td>${p.volume || "-"}</td>
       <td>${money(p.price)}</td>
+      <td>
+        <button class="avail-btn ${avail(p) ? "avail-on" : "avail-off"}" data-id="${p.id}" data-avail="${avail(p)}">
+          ${avail(p) ? "Disponible" : "No disponible"}
+        </button>
+      </td>
       <td class="row-actions">
         <button class="edit-btn" data-id="${p.id}">Editar</button>
         <button class="del-btn" data-id="${p.id}">Eliminar</button>
@@ -84,7 +90,19 @@ async function loadProducts() {
     )
     .join("");
 
-  tbody.querySelectorAll(".edit-btn").forEach((btn) =>
+  // Toggle de disponibilidad: cambia el estado y lo guarda.
+  tbody.querySelectorAll(".avail-btn").forEach((btn) =>
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.id;
+      const p = products.find((x) => x.id === id);
+      if (!p) return;
+      const next = !(p.available !== false);
+      await setAvailability(id, next);
+      loadProducts();
+    })
+  );
+
+tbody.querySelectorAll(".edit-btn").forEach((btn) =>
     btn.addEventListener("click", () => {
       const p = products.find((x) => x.id === btn.dataset.id);
       editingId = p.id;
@@ -95,6 +113,7 @@ async function loadProducts() {
       document.getElementById("p-abv").value = p.abv || "";
       document.getElementById("p-volume").value = p.volume || "";
       document.getElementById("p-price").value = p.price;
+      document.getElementById("p-available").value = String(p.available !== false);
       document.getElementById("p-tagline").value = p.tagline || "";
       document.getElementById("cancel-edit").style.display = "inline-flex";
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -112,6 +131,21 @@ async function loadProducts() {
 
 document.getElementById("cancel-edit").addEventListener("click", resetForm);
 
+// Cambia el estado de disponibilidad de un producto y lo guarda.
+async function setAvailability(id, available) {
+  const res = await fetch("/api/admin/products");
+  if (!res.ok) return;
+  const { products } = await res.json();
+  const p = products.find((x) => x.id === id);
+  if (!p) return;
+  p.available = available;
+  await fetch("/api/admin/products", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(p),
+  });
+}
+
 function resetForm() {
   editingId = null;
   document.getElementById("product-form").reset();
@@ -128,6 +162,7 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
     abv: document.getElementById("p-abv").value.trim(),
     volume: document.getElementById("p-volume").value.trim(),
     price: Number(document.getElementById("p-price").value),
+    available: document.getElementById("p-available").value === "true",
     tagline: document.getElementById("p-tagline").value.trim(),
   };
 
