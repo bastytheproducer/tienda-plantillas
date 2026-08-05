@@ -12,9 +12,12 @@ const STORE_ADDRESS = "Barril & Miel";
 // y el desgaste del vehículo. Retiro en tienda es gratis; el despacho
 // siembre se cobra según la distancia desde Puerto Montt.
 // Reglas:
-//  - Envío progresivo: $5.000 (cerca) → $7.000 (a los 15 km) → $21.000 (a los 25 km).
+//  - Dentro de 5 km: $2.500.
+//  - Desde 5 km: parte en $5.000 → $7.000 (a los 15 km) → $21.000 (a los 25 km).
 //  - Más de 25 km: NO se hace envío.
-const MIN_SHIPPING = 5000; // envío mínimo (cerca del origen)
+const LOCAL_KM = 5; // radio local donde se cobra tarifa fija
+const LOCAL_PRICE = 2500; // tarifa fija dentro del radio local
+const MIN_SHIPPING = 5000; // envío mínimo (desde el km 5)
 const TIER1_MAX = 7000; // a los 15 km se alcanza este precio
 const TIER1_KM = 15; // distancia donde el precio llega a $7.000
 const TIER2_MAX = 21000; // a los 25 km se alcanza este precio
@@ -56,13 +59,16 @@ const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, deliveryLat, deliveryLng);
   if (dist > MAX_DELIVERY_KM) {
     return { noDelivery: true, distanceKm: Math.round(dist) };
   }
-  // Progresión en dos tramos:
-  //  - Tramo 1: $5.000 (cerca) → $7.000 a los 15 km.
-  //  - Tramo 2: $7.000 → $21.000 desde 15 km hasta 25 km.
+// Progresión según distancia:
+  //  - Dentro de 5 km: tarifa fija $2.500.
+  //  - Desde 5 km: parte en $5.000 y sube → $7.000 a los 15 km → $21.000 a los 25 km.
   // Se redondea al múltiplo de $100 más cercano para montos claros.
   const price = (() => {
+    if (dist <= LOCAL_KM) {
+      return LOCAL_PRICE;
+    }
     if (dist <= TIER1_KM) {
-      const ratio = dist / TIER1_KM;
+      const ratio = (dist - LOCAL_KM) / (TIER1_KM - LOCAL_KM);
       return Math.round((MIN_SHIPPING + (TIER1_MAX - MIN_SHIPPING) * ratio) / 100) * 100;
     }
     const ratio = (dist - TIER1_KM) / (TIER2_KM - TIER1_KM);

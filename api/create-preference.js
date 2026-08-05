@@ -11,11 +11,13 @@ const { getProducts } = require("../lib/kv");
 const ORIGEN_LAT = -41.41005;
 const ORIGEN_LNG = -72.874869;
 
-// Envío progresivo en dos tramos:
-//  - Tramo 1: $5.000 (cerca) → $7.000 a los 15 km.
-//  - Tramo 2: $7.000 → $21.000 desde 15 km hasta 25 km.
+// Envío progresivo:
+//  - Dentro de 5 km: tarifa fija $2.500.
+//  - Desde 5 km: parte en $5.000 → $7.000 a los 15 km → $21.000 a los 25 km.
 // El despacho siempre se cobra; el retiro es gratis.
-const MIN_SHIPPING = 5000; // envío mínimo (cerca del origen)
+const LOCAL_KM = 5; // radio local donde se cobra tarifa fija
+const LOCAL_PRICE = 2500; // tarifa fija dentro del radio local
+const MIN_SHIPPING = 5000; // envío mínimo (desde el km 5)
 const TIER1_MAX = 7000; // a los 15 km se alcanza este precio
 const TIER1_KM = 15; // distancia donde el precio llega a $7.000
 const TIER2_MAX = 21000; // a los 25 km se alcanza este precio
@@ -39,13 +41,15 @@ function calculateShipping(isPickup, lat, lng) {
   const dist = distanceKm(ORIGEN_LAT, ORIGEN_LNG, Number(lat), Number(lng));
   // Más de 25 km: no se hace envío.
   if (dist > MAX_DELIVERY_KM) return null;
-  // Progresión en dos tramos:
-  //  - Tramo 1: $5.000 (cerca) → $7.000 a los 15 km.
-  //  - Tramo 2: $7.000 → $21.000 desde 15 km hasta 25 km.
+// Progresión según distancia:
+  //  - Dentro de 5 km: tarifa fija $2.500.
+  //  - Desde 5 km: parte en $5.000 y sube → $7.000 a los 15 km → $21.000 a los 25 km.
   // Se redondea al múltiplo de $100 más cercano para montos claros.
   let price;
-  if (dist <= TIER1_KM) {
-    const ratio = dist / TIER1_KM;
+  if (dist <= LOCAL_KM) {
+    price = LOCAL_PRICE;
+  } else if (dist <= TIER1_KM) {
+    const ratio = (dist - LOCAL_KM) / (TIER1_KM - LOCAL_KM);
     price = Math.round((MIN_SHIPPING + (TIER1_MAX - MIN_SHIPPING) * ratio) / 100) * 100;
   } else {
     const ratio = (dist - TIER1_KM) / (TIER2_KM - TIER1_KM);
