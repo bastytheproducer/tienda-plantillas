@@ -30,6 +30,12 @@
   .step-editor,.faq-editor{display:grid;gap:12px;}
   .editor-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
   .mini-btn{background:#eae1d2;border:1px solid rgba(43,27,18,0.18);color:var(--ink);padding:7px 12px;border-radius:var(--radius);cursor:pointer;font-size:12px;font-weight:600;}
+  .editor-shell{display:grid;grid-template-columns:420px minmax(0,1fr);gap:20px;align-items:start;}
+  .editor-column{background:rgba(255,255,255,0.04);border:1px solid rgba(244,236,221,0.12);border-radius:16px;padding:18px;}
+  .editor-column.right{padding:12px;background:rgba(255,255,255,0.02);}
+  .preview-header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(244,236,221,0.14);padding:8px 4px 12px;margin-bottom:12px;}
+  .preview-header span{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);}
+  .preview-frame{width:100%;min-height:760px;border:none;border-radius:12px;background:#fff;box-shadow:0 18px 38px rgba(0,0,0,0.18);}
   .preview-panel{margin-top:22px;background:#f7efe4;border:1px solid rgba(43,27,18,0.15);border-radius:var(--radius);padding:18px;}
   .preview-block{background:#fff;border:1px solid rgba(43,27,18,0.12);border-radius:var(--radius);padding:16px;margin-top:12px;}
   .preview-block h4{font-size:14px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:8px;}
@@ -84,74 +90,82 @@
   </div>
 
   <div class="panel editor-section" id="page-editor-panel">
-    <h2>Editor visual de la página</h2>
-    <p style="margin-bottom:16px; color:var(--ink-soft);">Edita textos principales de la web pública y guarda los cambios en el sitio en vivo.</p>
-    <form id="site-editor-form">
-      <div class="editor-grid">
-        <div class="field">
-          <label>Nombre de la marca</label>
-          <input type="text" id="site-brand" />
-        </div>
-        <div class="field">
-          <label>Email de contacto</label>
-          <input type="text" id="site-email" />
-        </div>
-        <div class="field full">
-          <label>Texto del hero</label>
-          <input type="text" id="site-hero-title" />
-        </div>
-        <div class="field">
-          <label>Eyebrow</label>
-          <input type="text" id="site-hero-eyebrow" />
-        </div>
-        <div class="field">
-          <label>Tagline</label>
-          <input type="text" id="site-hero-tagline" />
-        </div>
-        <div class="field">
-          <label>Modo de venta</label>
-          <input type="text" id="site-hero-modes" />
-        </div>
-        <div class="field">
-          <label>Badge</label>
-          <input type="text" id="site-hero-badge" />
-        </div>
-        <div class="field">
-          <label>Botón principal</label>
-          <input type="text" id="site-hero-primary" />
-        </div>
-        <div class="field">
-          <label>Botón secundario</label>
-          <input type="text" id="site-hero-secondary" />
-        </div>
+    <div class="editor-shell">
+      <div class="editor-column left">
+        <h2>Editor visual de la página</h2>
+        <p style="margin-bottom:18px; color:var(--ink-soft);">Edita el contenido principal y observa cómo cambia la landing al instante.</p>
+
+        <form id="site-editor-form">
+          <div class="editor-grid">
+            <div class="field">
+              <label>Nombre de la marca</label>
+              <input type="text" id="site-brand" />
+            </div>
+            <div class="field">
+              <label>Email de contacto</label>
+              <input type="text" id="site-email" />
+            </div>
+            <div class="field full">
+              <label>Texto del hero</label>
+              <input type="text" id="site-hero-title" />
+            </div>
+            <div class="field">
+              <label>Eyebrow</label>
+              <input type="text" id="site-hero-eyebrow" />
+            </div>
+            <div class="field">
+              <label>Tagline</label>
+              <input type="text" id="site-hero-tagline" />
+            </div>
+            <div class="field">
+              <label>Modo de venta</label>
+              <input type="text" id="site-hero-modes" />
+            </div>
+            <div class="field">
+              <label>Badge</label>
+              <input type="text" id="site-hero-badge" />
+            </div>
+            <div class="field">
+              <label>Botón principal</label>
+              <input type="text" id="site-hero-primary" />
+            </div>
+            <div class="field">
+              <label>Botón secundario</label>
+              <input type="text" id="site-hero-secondary" />
+            </div>
+          </div>
+
+          <div style="margin-top:20px;">
+            <h3 style="font-size:16px; color:var(--ink); margin-bottom:12px;">Pasos del proceso</h3>
+            <div class="editor-actions" style="margin-top:0; margin-bottom:12px;">
+              <button type="button" class="mini-btn" id="add-process-step">+ Agregar paso</button>
+            </div>
+            <div id="process-editor" class="step-editor"></div>
+          </div>
+
+          <div style="margin-top:20px;">
+            <h3 style="font-size:16px; color:var(--ink); margin-bottom:12px;">Preguntas frecuentes</h3>
+            <div class="editor-actions" style="margin-top:0; margin-bottom:12px;">
+              <button type="button" class="mini-btn" id="add-faq-item">+ Agregar FAQ</button>
+            </div>
+            <div id="faq-editor" class="faq-editor"></div>
+          </div>
+
+          <div class="editor-actions">
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <button type="button" class="btn btn-ghost" id="close-editor-btn">Cerrar editor</button>
+          </div>
+        </form>
       </div>
 
-      <div style="margin-top:20px;">
-        <h3 style="font-size:16px; color:var(--ink); margin-bottom:12px;">Pasos del proceso</h3>
-        <div class="editor-actions" style="margin-top:0; margin-bottom:12px;">
-          <button type="button" class="mini-btn" id="add-process-step">+ Agregar paso</button>
+      <div class="editor-column right">
+        <div class="preview-header">
+          <span>Vista previa en vivo</span>
+          <button type="button" class="mini-btn" id="refresh-preview-btn">Actualizar</button>
         </div>
-        <div id="process-editor" class="step-editor"></div>
+        <iframe id="editor-preview-frame" class="preview-frame" src="/" title="Vista previa de la tienda"></iframe>
       </div>
-
-      <div style="margin-top:20px;">
-        <h3 style="font-size:16px; color:var(--ink); margin-bottom:12px;">Preguntas frecuentes</h3>
-        <div class="editor-actions" style="margin-top:0; margin-bottom:12px;">
-          <button type="button" class="mini-btn" id="add-faq-item">+ Agregar FAQ</button>
-        </div>
-        <div id="faq-editor" class="faq-editor"></div>
-      </div>
-
-      <div class="preview-panel">
-        <h3 style="font-size:16px; color:var(--ink); margin-bottom:8px;">Vista previa</h3>
-        <div id="editor-preview"></div>
-      </div>
-
-      <div class="editor-actions">
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        <button type="button" class="btn btn-ghost" id="close-editor-btn">Cerrar editor</button>
-      </div>
-    </form>
+    </div>
   </div>
 
   <div class="panel">

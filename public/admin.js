@@ -57,15 +57,15 @@ function escapeAttr(value) {
   return escapeHtml(value).replace(/`/g, "&#96;");
 }
 
-function renderEditorPreview() {
-  const preview = document.getElementById("editor-preview");
-  if (!preview) return;
-
+function buildPreviewPayload() {
   const brand = document.getElementById("site-brand").value.trim() || "Bees and Beers";
   const heroTitle = document.getElementById("site-hero-title").value.trim() || "Cervezas, hidromiel y bebestibles fermentados varios";
   const heroTagline = document.getElementById("site-hero-tagline").value.trim() || "Elaboradas con pasión y tradición.";
   const heroModes = document.getElementById("site-hero-modes").value.trim() || "Ventas al por mayor · Retiro en tienda · Despacho a domicilio";
   const heroBadge = document.getElementById("site-hero-badge").value.trim() || "🔞 Venta exclusiva para mayores de 18 años";
+  const heroPrimary = document.getElementById("site-hero-primary").value.trim() || "Ver catálogo";
+  const heroSecondary = document.getElementById("site-hero-secondary").value.trim() || "Cómo funciona";
+  const heroEyebrow = document.getElementById("site-hero-eyebrow").value.trim() || "Elaboración artesanal";
 
   const processItems = Array.from(document.querySelectorAll('[data-role="process-title"]')).map((input, index) => ({
     title: input.value.trim() || `Paso ${index + 1}`,
@@ -77,27 +77,96 @@ function renderEditorPreview() {
     answer: document.querySelector(`[data-role="faq-answer"][data-index="${index}"]`)?.value.trim() || "",
   }));
 
-  preview.innerHTML = `
-    <div class="preview-block preview-hero">
-      <h4>Hero</h4>
-      <h3>${heroTitle}</h3>
-      <p>${heroTagline}</p>
-      <p>${heroModes}</p>
-      <span>${heroBadge}</span>
-    </div>
-    <div class="preview-block">
-      <h4>Marca</h4>
-      <p>${brand}</p>
-    </div>
-    <div class="preview-block">
-      <h4>Proceso</h4>
-      ${processItems.map((item, idx) => `<div style="margin-top:8px;"><strong>${idx + 1}. ${item.title}</strong><div>${item.description}</div></div>`).join("")}
-    </div>
-    <div class="preview-block">
-      <h4>FAQ</h4>
-      ${faqItems.map((item, idx) => `<div style="margin-top:8px;"><strong>${idx + 1}. ${item.question}</strong><div>${item.answer}</div></div>`).join("")}
-    </div>
-  `;
+  return {
+    brand,
+    email: document.getElementById("site-email").value.trim() || "contacto@tudominio.cl",
+    footerText: `${brand} — bebidas artesanales`,
+    hero: {
+      eyebrow: heroEyebrow,
+      title: heroTitle,
+      tagline: heroTagline,
+      modes: heroModes,
+      badge: heroBadge,
+      primaryCta: heroPrimary,
+      secondaryCta: heroSecondary,
+    },
+    process: { steps: processItems },
+    faq: faqItems,
+  };
+}
+
+function renderEditorPreview() {
+  const previewFrame = document.getElementById("editor-preview-frame");
+  if (!previewFrame) return;
+
+  const payload = buildPreviewPayload();
+  const previewDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+  const safeBrand = payload.brand || "Bees and Beers";
+  const safeHero = payload.hero;
+  const safeFaq = payload.faq || [];
+  const safeProcess = payload.process?.steps || [];
+
+  previewDoc.open();
+  previewDoc.write(`<!DOCTYPE html>
+    <html lang="es-CL">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+          :root { --bg:#241713; --bg-deep:#1A0F0C; --paper:#F4ECDD; --ink:#2B1B12; --ink-soft:#5A4433; --copper:#C97A3D; --line-soft:rgba(255,255,255,0.12); --serif:"Fraunces", Georgia, serif; --sans:"IBM Plex Sans", sans-serif; }
+          * { box-sizing:border-box; }
+          body { margin:0; background:#f7efe4; color:var(--ink); font-family:var(--sans); }
+          .layout { padding:20px; }
+          .hero { background:linear-gradient(135deg,#3b2a23,#1d110d); color:#fff; border-radius:16px; padding:32px 24px; }
+          .eyebrow { font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#f0b583; margin-bottom:10px; }
+          h1 { margin:0 0 12px; font-size:32px; line-height:1.1; font-family:var(--serif); }
+          .tagline { font-size:16px; opacity:0.9; margin-bottom:16px; }
+          .modes { font-size:13px; margin-bottom:18px; }
+          .badge { display:inline-block; border:1px solid rgba(255,255,255,0.2); padding:8px 12px; border-radius:999px; font-size:12px; }
+          .cta { display:flex; gap:12px; margin-top:16px; }
+          .btn { display:inline-flex; align-items:center; justify-content:center; border-radius:8px; padding:10px 16px; font-weight:700; }
+          .btn.primary { background:#C97A3D; color:#1A0F0C; }
+          .btn.secondary { border:1px solid rgba(255,255,255,0.25); color:#fff; }
+          .section { margin-top:22px; background:#fff; border-radius:12px; padding:18px 16px; }
+          .section h3 { margin:0 0 12px; font-family:var(--serif); font-size:22px; color:var(--ink); }
+          .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+          .step, .faq-item { background:#f7efe4; border:1px solid rgba(43,27,18,0.08); border-radius:10px; padding:12px; }
+          .step strong, .faq-item strong { display:block; margin-bottom:6px; }
+          .faq-item + .faq-item { margin-top:12px; }
+          .brand { font-family:var(--serif); font-size:18px; font-weight:700; margin-bottom:14px; }
+        </style>
+      </head>
+      <body>
+        <div class="layout">
+          <div class="brand">${safeBrand}</div>
+          <div class="hero">
+            <div class="eyebrow">${safeHero.eyebrow}</div>
+            <h1>${safeHero.title}</h1>
+            <div class="tagline">${safeHero.tagline}</div>
+            <div class="modes">${safeHero.modes}</div>
+            <div class="badge">${safeHero.badge}</div>
+            <div class="cta">
+              <span class="btn primary">${safeHero.primaryCta}</span>
+              <span class="btn secondary">${safeHero.secondaryCta}</span>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Proceso</h3>
+            <div class="grid">
+              ${safeProcess.map((step, index) => `<div class="step"><strong>${index + 1}. ${step.title}</strong><div>${step.description || ""}</div></div>`).join("") || "<div class='step'>Sin pasos cargados</div>"}
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>FAQ</h3>
+            ${safeFaq.map((item, index) => `<div class="faq-item"><strong>${index + 1}. ${item.question}</strong><div>${item.answer || ""}</div></div>`).join("") || "<div class='faq-item'>Sin preguntas cargadas</div>"}
+          </div>
+        </div>
+      </body>
+    </html>`);
+  previewDoc.close();
 }
 
 function attachPreviewEvents() {
@@ -181,6 +250,7 @@ async function saveSiteContent() {
 
 document.getElementById("add-process-step").addEventListener("click", addProcessStep);
 document.getElementById("add-faq-item").addEventListener("click", addFaqItem);
+document.getElementById("refresh-preview-btn").addEventListener("click", renderEditorPreview);
 
 document.getElementById("site-editor-form").addEventListener("submit", async (event) => {
   event.preventDefault();
