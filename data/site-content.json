@@ -1,0 +1,48 @@
+{
+  "brand": "Bees and Beers",
+  "email": "contacto@tudominio.cl",
+  "hero": {
+    "eyebrow": "Elaboración artesanal",
+    "title": "Cervezas, hidromiel y bebestibles fermentados varios",
+    "tagline": "Elaboradas con pasión y tradición.",
+    "modes": "Ventas al por mayor · Retiro en tienda · Despacho a domicilio",
+    "badge": "🔞 Venta exclusiva para mayores de 18 años",
+    "primaryCta": "Ver catálogo",
+    "secondaryCta": "Cómo funciona"
+  },
+  "process": {
+    "steps": [
+      {
+        "title": "Eliges y pagas",
+        "description": "Tarjeta de crédito, débito, transferencia u otros medios habilitados en Mercado Pago."
+      },
+      {
+        "title": "Confirmamos tu pedido",
+        "description": "Recibes un correo de confirmación apenas se aprueba el pago, con el detalle de tu compra."
+      },
+      {
+        "title": "Preparamos y despachamos",
+        "description": "Embotellamos y coordinamos el envío o retiro. La entrega del despacho se estima en una hora y media desde que se hace el pedido."
+      }
+    ]
+  },
+  "faq": [
+    {
+      "question": "¿Puedo comprar si soy menor de edad?",
+      "answer": "No. La venta de alcohol a menores de 18 años está prohibida por ley. Nos reservamos el derecho de solicitar verificación de identidad al momento de la entrega."
+    },
+    {
+      "question": "¿Cuánto demora el despacho?",
+      "answer": "Estimamos la entrega en una hora y media desde que se hace el pedido, dependiendo de la zona y el tráfico."
+    },
+    {
+      "question": "¿Qué medios de pago aceptan?",
+      "answer": "Tarjetas de crédito y débito, transferencia bancaria y otros medios disponibles en la pasarela de pago."
+    },
+    {
+      "question": "¿Hay devoluciones?",
+      "answer": "Si tu pedido llega dañado o incompleto, escríbenos dentro de las 48 horas siguientes a la entrega y lo resolvemos."
+    }
+  ],
+  "footerText": "Bees and Beers — bebidas artesanales"
+}

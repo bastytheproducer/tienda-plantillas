@@ -3,6 +3,70 @@ const money = (n) => "$" + Math.round(n).toLocaleString("es-CL");
 let PRODUCTS = [];
 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
+async function applySiteContent() {
+  try {
+    const res = await fetch("/api/site-content");
+    if (!res.ok) return;
+    const content = await res.json();
+
+    const brandName = document.getElementById("brand-name");
+    if (brandName && content.brand) brandName.textContent = content.brand === "Bees and Beers" ? "B&B" : content.brand;
+
+    const heroEyebrow = document.getElementById("hero-eyebrow");
+    if (heroEyebrow && content.hero?.eyebrow) heroEyebrow.textContent = content.hero.eyebrow;
+
+    const heroTitle = document.getElementById("hero-title");
+    if (heroTitle && content.hero?.title) heroTitle.innerHTML = content.hero.title.replace(/\n/g, "<br>");
+
+    const heroTagline = document.getElementById("hero-tagline");
+    if (heroTagline && content.hero?.tagline) heroTagline.textContent = content.hero.tagline;
+
+    const heroModes = document.getElementById("hero-modes");
+    if (heroModes && content.hero?.modes) heroModes.textContent = content.hero.modes;
+
+    const heroBadge = document.getElementById("hero-badge");
+    if (heroBadge && content.hero?.badge) heroBadge.textContent = content.hero.badge;
+
+    const heroPrimary = document.getElementById("hero-primary-cta");
+    if (heroPrimary && content.hero?.primaryCta) heroPrimary.textContent = content.hero.primaryCta;
+
+    const heroSecondary = document.getElementById("hero-secondary-cta");
+    if (heroSecondary && content.hero?.secondaryCta) heroSecondary.textContent = content.hero.secondaryCta;
+
+    const footerText = document.getElementById("footer-text");
+    if (footerText && content.footerText) footerText.textContent = content.footerText;
+
+    const footerEmail = document.getElementById("footer-email");
+    if (footerEmail && content.email) {
+      footerEmail.href = `mailto:${content.email}`;
+      footerEmail.textContent = content.email;
+    }
+
+    const howGrid = document.getElementById("how-grid");
+    if (howGrid && Array.isArray(content.process?.steps)) {
+      howGrid.innerHTML = content.process.steps.map((step, index) => `
+        <div class="how-step">
+          <span class="rn">${index + 1}</span>
+          <h3>${step.title}</h3>
+          <p>${step.description}</p>
+        </div>
+      `).join("");
+    }
+
+    const faqList = document.getElementById("faq-list");
+    if (faqList && Array.isArray(content.faq)) {
+      faqList.innerHTML = content.faq.map((item) => `
+        <details>
+          <summary>${item.question}</summary>
+          <p>${item.answer}</p>
+        </details>
+      `).join("");
+    }
+  } catch (error) {
+    console.warn("No se pudo cargar el contenido editable del sitio", error);
+  }
+}
+
 // ---- Costos de envío (Bees and Beers, origen: Puerto Montt) ----
 const ORIGEN_LAT = -41.41005;
 const ORIGEN_LNG = -72.874869;
@@ -558,6 +622,7 @@ note.textContent = "No hacemos envíos a más de 25 km. Elige retiro en tienda o
 });
 
 async function init() {
+  await applySiteContent();
   const res = await fetch("/api/products");
   PRODUCTS = await res.json();
   renderProducts();

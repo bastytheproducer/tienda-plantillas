@@ -15,12 +15,26 @@
   .field label{display:block;font-size:12px;font-family:var(--mono);margin-bottom:6px;color:var(--ink-soft);}
   .field input{width:100%;padding:10px 12px;border:1px solid rgba(43,27,18,0.2);border-radius:var(--radius);font-family:var(--sans);font-size:14px;}
   .admin-error{color:#A8432F;font-size:13px;margin-top:10px;}
-  .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;}
+  .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;gap:12px;flex-wrap:wrap;}
   .admin-header h1{font-size:26px;}
-  .logout-btn{background:none;border:1px solid var(--line-soft);color:var(--paper);padding:8px 14px;border-radius:var(--radius);cursor:pointer;font-size:13px;}
+  .admin-header-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .logout-btn,.primary-btn {background:none;border:1px solid var(--line-soft);color:var(--paper);padding:8px 14px;border-radius:var(--radius);cursor:pointer;font-size:13px;}
+  .primary-btn{background:var(--copper);border-color:var(--copper);color:var(--bg-deep);font-weight:600;}
   .kv-warning{background:rgba(201,122,61,0.14);border:1px solid var(--copper);color:var(--paper);padding:14px 16px;border-radius:var(--radius);font-size:13px;margin-bottom:28px;}
   .panel{background:var(--paper);color:var(--ink);border-radius:var(--radius);padding:24px;margin-bottom:28px;}
   .panel h2{font-size:17px;margin-bottom:16px;}
+  .editor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+  .field textarea{width:100%;padding:10px 12px;border:1px solid rgba(43,27,18,0.2);border-radius:var(--radius);font-family:var(--sans);font-size:14px;min-height:80px;resize:vertical;}
+  .editor-section{display:none;}
+  .editor-section.active{display:block;}
+  .step-editor,.faq-editor{display:grid;gap:12px;}
+  .editor-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+  .mini-btn{background:#eae1d2;border:1px solid rgba(43,27,18,0.18);color:var(--ink);padding:7px 12px;border-radius:var(--radius);cursor:pointer;font-size:12px;font-weight:600;}
+  .preview-panel{margin-top:22px;background:#f7efe4;border:1px solid rgba(43,27,18,0.15);border-radius:var(--radius);padding:18px;}
+  .preview-block{background:#fff;border:1px solid rgba(43,27,18,0.12);border-radius:var(--radius);padding:16px;margin-top:12px;}
+  .preview-block h4{font-size:14px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:8px;}
+  .preview-hero{background:linear-gradient(135deg, #3a261d, #2b110d);color:#f7efe4;padding:18px;border-radius:10px;}
+  .preview-hero h3{color:#f7efe4;}
   table{width:100%;border-collapse:collapse;font-size:13px;}
   th{text-align:left;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--ink-soft);padding:8px 6px;border-bottom:1px solid rgba(43,27,18,0.15);}
   td{padding:10px 6px;border-bottom:1px solid rgba(43,27,18,0.08);vertical-align:top;}
@@ -56,14 +70,88 @@
 
 <div id="admin-view" class="admin-wrap" style="display:none;">
   <div class="admin-header">
-<h1>Panel admin — Bees and Beers</h1>
-    <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
+    <h1>Panel admin — Bees and Beers</h1>
+    <div class="admin-header-actions">
+      <button type="button" class="primary-btn" id="open-editor-btn">Editor visual</button>
+      <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
+    </div>
   </div>
 
   <div class="kv-warning" id="kv-warning" style="display:none;">
     <strong id="kv-status-title">Catálogo en modo solo lectura</strong>
     <p id="kv-status-detail" style="margin:6px 0 12px;">Conecta Upstash (Redis gratis) para poder guardar cambios desde aquí.</p>
     <button class="btn btn-ghost" id="recheck-kv" type="button">Volver a comprobar</button>
+  </div>
+
+  <div class="panel editor-section" id="page-editor-panel">
+    <h2>Editor visual de la página</h2>
+    <p style="margin-bottom:16px; color:var(--ink-soft);">Edita textos principales de la web pública y guarda los cambios en el sitio en vivo.</p>
+    <form id="site-editor-form">
+      <div class="editor-grid">
+        <div class="field">
+          <label>Nombre de la marca</label>
+          <input type="text" id="site-brand" />
+        </div>
+        <div class="field">
+          <label>Email de contacto</label>
+          <input type="text" id="site-email" />
+        </div>
+        <div class="field full">
+          <label>Texto del hero</label>
+          <input type="text" id="site-hero-title" />
+        </div>
+        <div class="field">
+          <label>Eyebrow</label>
+          <input type="text" id="site-hero-eyebrow" />
+        </div>
+        <div class="field">
+          <label>Tagline</label>
+          <input type="text" id="site-hero-tagline" />
+        </div>
+        <div class="field">
+          <label>Modo de venta</label>
+          <input type="text" id="site-hero-modes" />
+        </div>
+        <div class="field">
+          <label>Badge</label>
+          <input type="text" id="site-hero-badge" />
+        </div>
+        <div class="field">
+          <label>Botón principal</label>
+          <input type="text" id="site-hero-primary" />
+        </div>
+        <div class="field">
+          <label>Botón secundario</label>
+          <input type="text" id="site-hero-secondary" />
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <h3 style="font-size:16px; color:var(--ink); margin-bottom:12px;">Pasos del proceso</h3>
+        <div class="editor-actions" style="margin-top:0; margin-bottom:12px;">
+          <button type="button" class="mini-btn" id="add-process-step">+ Agregar paso</button>
+        </div>
+        <div id="process-editor" class="step-editor"></div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <h3 style="font-size:16px; color:var(--ink); margin-bottom:12px;">Preguntas frecuentes</h3>
+        <div class="editor-actions" style="margin-top:0; margin-bottom:12px;">
+          <button type="button" class="mini-btn" id="add-faq-item">+ Agregar FAQ</button>
+        </div>
+        <div id="faq-editor" class="faq-editor"></div>
+      </div>
+
+      <div class="preview-panel">
+        <h3 style="font-size:16px; color:var(--ink); margin-bottom:8px;">Vista previa</h3>
+        <div id="editor-preview"></div>
+      </div>
+
+      <div class="editor-actions">
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <button type="button" class="btn btn-ghost" id="close-editor-btn">Cerrar editor</button>
+      </div>
+    </form>
   </div>
 
   <div class="panel">

@@ -28,7 +28,7 @@
   <div class="wrap topbar-inner">
 <a href="#top" class="brand">
       <img src="images/logo.png" alt="Bees and Beers" class="brand-logo">
-      <span class="brand-name">B&B</span>
+      <span class="brand-name" id="brand-name">B&B</span>
     </a>
     <nav class="topnav">
       <a href="#catalogo">Catálogo</a>
@@ -52,14 +52,14 @@
     <div class="wrap hero-inner">
 <div class="hero-copy">
         <img src="images/logo.png" alt="Bees and Beers" class="hero-logo">
-<p class="eyebrow">Elaboración artesanal</p>
-<h1>Cervezas, hidromiel y<br>bebestibles fermentados varios</h1>
-        <p class="hero-tagline">Elaboradas con pasión y tradición.</p>
-        <p class="hero-modes">Ventas al por mayor · Retiro en tienda · Despacho a domicilio</p>
-        <div class="hero-badge">🔞 Venta exclusiva para mayores de 18 años</div>
+<p class="eyebrow" id="hero-eyebrow">Elaboración artesanal</p>
+<h1 id="hero-title">Cervezas, hidromiel y<br>bebestibles fermentados varios</h1>
+        <p class="hero-tagline" id="hero-tagline">Elaboradas con pasión y tradición.</p>
+        <p class="hero-modes" id="hero-modes">Ventas al por mayor · Retiro en tienda · Despacho a domicilio</p>
+        <div class="hero-badge" id="hero-badge">🔞 Venta exclusiva para mayores de 18 años</div>
         <div class="hero-cta">
-          <a href="#catalogo" class="btn btn-primary">Ver catálogo</a>
-          <a href="#como-funciona" class="btn btn-ghost">Cómo funciona</a>
+          <a href="#catalogo" class="btn btn-primary" id="hero-primary-cta">Ver catálogo</a>
+          <a href="#como-funciona" class="btn btn-ghost" id="hero-secondary-cta">Cómo funciona</a>
         </div>
       </div>
     </div>
@@ -79,23 +79,7 @@
     <div class="wrap">
       <p class="eyebrow">Proceso</p>
       <h2>De tu pedido a tu puerta</h2>
-      <div class="how-grid">
-        <div class="how-step">
-          <span class="rn">1</span>
-          <h3>Eliges y pagas</h3>
-          <p>Tarjeta de crédito, débito, transferencia u otros medios habilitados en Mercado Pago.</p>
-        </div>
-        <div class="how-step">
-          <span class="rn">2</span>
-          <h3>Confirmamos tu pedido</h3>
-          <p>Recibes un correo de confirmación apenas se aprueba el pago, con el detalle de tu compra.</p>
-        </div>
-        <div class="how-step">
-          <span class="rn">3</span>
-          <h3>Preparamos y despachamos</h3>
-<p>Embotellamos y coordinamos el envío o retiro. La entrega del despacho se estima en una hora y media desde que se hace el pedido.</p>
-        </div>
-      </div>
+      <div class="how-grid" id="how-grid"></div>
     </div>
   </section>
 
@@ -103,22 +87,7 @@
     <div class="wrap">
       <p class="eyebrow">Detalles</p>
       <h2>Preguntas frecuentes</h2>
-      <details>
-        <summary>¿Puedo comprar si soy menor de edad?</summary>
-        <p>No. La venta de alcohol a menores de 18 años está prohibida por ley. Nos reservamos el derecho de solicitar verificación de identidad al momento de la entrega.</p>
-      </details>
-      <details>
-        <summary>¿Cuánto demora el despacho?</summary>
-<p>Estimamos la entrega en una hora y media desde que se hace el pedido, dependiendo de la zona y el tráfico.</p>
-      </details>
-      <details>
-        <summary>¿Qué medios de pago aceptan?</summary>
-        <p>Tarjetas de crédito y débito, transferencia bancaria y otros medios disponibles en la pasarela de pago.</p>
-      </details>
-      <details>
-        <summary>¿Hay devoluciones?</summary>
-        <p>Si tu pedido llega dañado o incompleto, escríbenos dentro de las 48 horas siguientes a la entrega y lo resolvemos.</p>
-      </details>
+      <div id="faq-list"></div>
     </div>
   </section>
 
@@ -132,8 +101,8 @@
 
 <footer class="footer">
   <div class="wrap footer-inner">
-<span>Bees and Beers — bebidas artesanales</span>
-    <a href="mailto:contacto@tudominio.cl">contacto@tudominio.cl</a>
+<span id="footer-text">Bees and Beers — bebidas artesanales</span>
+    <a href="mailto:contacto@tudominio.cl" id="footer-email">contacto@tudominio.cl</a>
   </div>
 </footer>
 

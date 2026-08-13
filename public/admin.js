@@ -1,6 +1,194 @@
 const money = (n) => "$" + Number(n).toLocaleString("es-CL");
 const loginView = document.getElementById("login-view");
 const adminView = document.getElementById("admin-view");
+const pageEditorPanel = document.getElementById("page-editor-panel");
+
+function toggleEditor(forceOpen) {
+  const shouldOpen = typeof forceOpen === "boolean" ? forceOpen : !pageEditorPanel.classList.contains("active");
+  pageEditorPanel.classList.toggle("active", shouldOpen);
+  pageEditorPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+document.getElementById("open-editor-btn").addEventListener("click", () => toggleEditor(true));
+document.getElementById("close-editor-btn").addEventListener("click", () => toggleEditor(false));
+
+async function loadSiteContentEditor() {
+  const res = await fetch("/api/site-content");
+  if (!res.ok) return;
+  const content = await res.json();
+
+  document.getElementById("site-brand").value = content.brand || "Bees and Beers";
+  document.getElementById("site-email").value = content.email || "";
+  document.getElementById("site-hero-eyebrow").value = content.hero?.eyebrow || "";
+  document.getElementById("site-hero-title").value = content.hero?.title || "";
+  document.getElementById("site-hero-tagline").value = content.hero?.tagline || "";
+  document.getElementById("site-hero-modes").value = content.hero?.modes || "";
+  document.getElementById("site-hero-badge").value = content.hero?.badge || "";
+  document.getElementById("site-hero-primary").value = content.hero?.primaryCta || "";
+  document.getElementById("site-hero-secondary").value = content.hero?.secondaryCta || "";
+
+  const processEditor = document.getElementById("process-editor");
+  processEditor.innerHTML = (content.process?.steps || []).map((step, index) => `
+    <div style="padding:12px;border:1px solid rgba(43,27,18,0.12);border-radius:var(--radius);">
+      <div class="field"><label>Paso ${index + 1} — título</label><input type="text" data-role="process-title" data-index="${index}" value="${escapeAttr(step.title || "")}" /></div>
+      <div class="field"><label>Descripción</label><textarea data-role="process-description" data-index="${index}">${escapeHtml(step.description || "")}</textarea></div>
+    </div>
+  `).join("");
+
+  const faqEditor = document.getElementById("faq-editor");
+  faqEditor.innerHTML = (content.faq || []).map((item, index) => `
+    <div style="padding:12px;border:1px solid rgba(43,27,18,0.12);border-radius:var(--radius);">
+      <div class="field"><label>Pregunta ${index + 1}</label><input type="text" data-role="faq-question" data-index="${index}" value="${escapeAttr(item.question || "")}" /></div>
+      <div class="field"><label>Respuesta</label><textarea data-role="faq-answer" data-index="${index}">${escapeHtml(item.answer || "")}</textarea></div>
+    </div>
+  `).join("");
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value).replace(/`/g, "&#96;");
+}
+
+function renderEditorPreview() {
+  const preview = document.getElementById("editor-preview");
+  if (!preview) return;
+
+  const brand = document.getElementById("site-brand").value.trim() || "Bees and Beers";
+  const heroTitle = document.getElementById("site-hero-title").value.trim() || "Cervezas, hidromiel y bebestibles fermentados varios";
+  const heroTagline = document.getElementById("site-hero-tagline").value.trim() || "Elaboradas con pasión y tradición.";
+  const heroModes = document.getElementById("site-hero-modes").value.trim() || "Ventas al por mayor · Retiro en tienda · Despacho a domicilio";
+  const heroBadge = document.getElementById("site-hero-badge").value.trim() || "🔞 Venta exclusiva para mayores de 18 años";
+
+  const processItems = Array.from(document.querySelectorAll('[data-role="process-title"]')).map((input, index) => ({
+    title: input.value.trim() || `Paso ${index + 1}`,
+    description: document.querySelector(`[data-role="process-description"][data-index="${index}"]`)?.value.trim() || "",
+  }));
+
+  const faqItems = Array.from(document.querySelectorAll('[data-role="faq-question"]')).map((input, index) => ({
+    question: input.value.trim() || `Pregunta ${index + 1}`,
+    answer: document.querySelector(`[data-role="faq-answer"][data-index="${index}"]`)?.value.trim() || "",
+  }));
+
+  preview.innerHTML = `
+    <div class="preview-block preview-hero">
+      <h4>Hero</h4>
+      <h3>${heroTitle}</h3>
+      <p>${heroTagline}</p>
+      <p>${heroModes}</p>
+      <span>${heroBadge}</span>
+    </div>
+    <div class="preview-block">
+      <h4>Marca</h4>
+      <p>${brand}</p>
+    </div>
+    <div class="preview-block">
+      <h4>Proceso</h4>
+      ${processItems.map((item, idx) => `<div style="margin-top:8px;"><strong>${idx + 1}. ${item.title}</strong><div>${item.description}</div></div>`).join("")}
+    </div>
+    <div class="preview-block">
+      <h4>FAQ</h4>
+      ${faqItems.map((item, idx) => `<div style="margin-top:8px;"><strong>${idx + 1}. ${item.question}</strong><div>${item.answer}</div></div>`).join("")}
+    </div>
+  `;
+}
+
+function attachPreviewEvents() {
+  document.querySelectorAll("#site-editor-form input, #site-editor-form textarea").forEach((field) => {
+    field.addEventListener("input", renderEditorPreview);
+  });
+}
+
+function addProcessStep() {
+  const processEditor = document.getElementById("process-editor");
+  const index = processEditor.querySelectorAll('[data-role="process-title"]').length;
+  processEditor.insertAdjacentHTML(
+    "beforeend",
+    `
+      <div style="padding:12px;border:1px solid rgba(43,27,18,0.12);border-radius:var(--radius);">
+        <div class="field"><label>Paso ${index + 1} — título</label><input type="text" data-role="process-title" data-index="${index}" value="" /></div>
+        <div class="field"><label>Descripción</label><textarea data-role="process-description" data-index="${index}"></textarea></div>
+      </div>
+    `
+  );
+  attachPreviewEvents();
+  renderEditorPreview();
+}
+
+function addFaqItem() {
+  const faqEditor = document.getElementById("faq-editor");
+  const index = faqEditor.querySelectorAll('[data-role="faq-question"]').length;
+  faqEditor.insertAdjacentHTML(
+    "beforeend",
+    `
+      <div style="padding:12px;border:1px solid rgba(43,27,18,0.12);border-radius:var(--radius);">
+        <div class="field"><label>Pregunta ${index + 1}</label><input type="text" data-role="faq-question" data-index="${index}" value="" /></div>
+        <div class="field"><label>Respuesta</label><textarea data-role="faq-answer" data-index="${index}"></textarea></div>
+      </div>
+    `
+  );
+  attachPreviewEvents();
+  renderEditorPreview();
+}
+
+async function saveSiteContent() {
+  const payload = {
+    brand: document.getElementById("site-brand").value.trim() || "Bees and Beers",
+    email: document.getElementById("site-email").value.trim(),
+    hero: {
+      eyebrow: document.getElementById("site-hero-eyebrow").value.trim(),
+      title: document.getElementById("site-hero-title").value.trim(),
+      tagline: document.getElementById("site-hero-tagline").value.trim(),
+      modes: document.getElementById("site-hero-modes").value.trim(),
+      badge: document.getElementById("site-hero-badge").value.trim(),
+      primaryCta: document.getElementById("site-hero-primary").value.trim() || "Ver catálogo",
+      secondaryCta: document.getElementById("site-hero-secondary").value.trim() || "Cómo funciona",
+    },
+    process: {
+      steps: Array.from(document.querySelectorAll('[data-role="process-title"]')).map((input, index) => ({
+        title: input.value.trim() || `Paso ${index + 1}`,
+        description: document.querySelector(`[data-role="process-description"][data-index="${index}"]`).value.trim() || "",
+      })),
+    },
+    faq: Array.from(document.querySelectorAll('[data-role="faq-question"]')).map((input, index) => ({
+      question: input.value.trim() || `Pregunta ${index + 1}`,
+      answer: document.querySelector(`[data-role="faq-answer"][data-index="${index}"]`).value.trim() || "",
+    })),
+  };
+
+  const res = await fetch("/api/site-content", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    alert(error.error || "No se pudo guardar el contenido");
+    return;
+  }
+
+  alert("Cambios guardados. La página pública fue actualizada.");
+  location.reload();
+}
+
+document.getElementById("add-process-step").addEventListener("click", addProcessStep);
+document.getElementById("add-faq-item").addEventListener("click", addFaqItem);
+
+document.getElementById("site-editor-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  await saveSiteContent();
+});
+
+attachPreviewEvents();
+renderEditorPreview();
 
 document.getElementById("login-btn").addEventListener("click", async () => {
   const user = document.getElementById("login-user").value;
@@ -26,6 +214,7 @@ document.getElementById("logout-btn").addEventListener("click", async () => {
 async function showAdmin() {
   loginView.style.display = "none";
   adminView.style.display = "block";
+  await loadSiteContentEditor();
   await loadProducts();
   await loadOrders();
 }
