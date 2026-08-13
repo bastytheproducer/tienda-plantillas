@@ -9,6 +9,16 @@ async function applySiteContent() {
     if (!res.ok) return;
     const content = await res.json();
 
+    if (content.theme) {
+      const root = document.documentElement;
+      root.style.setProperty("--copper", content.theme.primary || "#C97A3D");
+      root.style.setProperty("--copper-bright", content.theme.secondary || content.theme.primary || "#E39655");
+      root.style.setProperty("--bg", content.theme.bg || "#241713");
+      root.style.setProperty("--bg-deep", content.theme.bgDeep || content.theme.bg || "#1A0F0C");
+      root.style.setProperty("--paper", content.theme.paper || "#F4ECDD");
+      root.style.setProperty("--ink", content.theme.ink || "#2B1B12");
+    }
+
     const brandName = document.getElementById("brand-name");
     if (brandName && content.brand) brandName.textContent = content.brand === "Bees and Beers" ? "B&B" : content.brand;
 

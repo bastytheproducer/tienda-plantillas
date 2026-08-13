@@ -1,6 +1,14 @@
 {
   "brand": "Bees and Beers",
   "email": "contacto@tudominio.cl",
+  "theme": {
+    "primary": "#C97A3D",
+    "secondary": "#E39655",
+    "bg": "#241713",
+    "bgDeep": "#1A0F0C",
+    "paper": "#F4ECDD",
+    "ink": "#2B1B12"
+  },
   "hero": {
     "eyebrow": "Elaboración artesanal",
     "title": "Cervezas, hidromiel y bebestibles fermentados varios",

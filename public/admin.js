@@ -24,6 +24,8 @@ async function loadSiteContentEditor() {
   document.getElementById("site-hero-tagline").value = content.hero?.tagline || "";
   document.getElementById("site-hero-modes").value = content.hero?.modes || "";
   document.getElementById("site-hero-badge").value = content.hero?.badge || "";
+  document.getElementById("site-theme-primary").value = content.theme?.primary || "#C97A3D";
+  document.getElementById("site-theme-bg").value = content.theme?.bg || "#241713";
   document.getElementById("site-hero-primary").value = content.hero?.primaryCta || "";
   document.getElementById("site-hero-secondary").value = content.hero?.secondaryCta || "";
 
@@ -66,6 +68,8 @@ function buildPreviewPayload() {
   const heroPrimary = document.getElementById("site-hero-primary").value.trim() || "Ver catálogo";
   const heroSecondary = document.getElementById("site-hero-secondary").value.trim() || "Cómo funciona";
   const heroEyebrow = document.getElementById("site-hero-eyebrow").value.trim() || "Elaboración artesanal";
+  const themePrimary = document.getElementById("site-theme-primary").value || "#C97A3D";
+  const themeBg = document.getElementById("site-theme-bg").value || "#241713";
 
   const processItems = Array.from(document.querySelectorAll('[data-role="process-title"]')).map((input, index) => ({
     title: input.value.trim() || `Paso ${index + 1}`,
@@ -81,6 +85,14 @@ function buildPreviewPayload() {
     brand,
     email: document.getElementById("site-email").value.trim() || "contacto@tudominio.cl",
     footerText: `${brand} — bebidas artesanales`,
+    theme: {
+      primary: themePrimary,
+      secondary: themePrimary,
+      bg: themeBg,
+      bgDeep: themeBg,
+      paper: "#F4ECDD",
+      ink: "#2B1B12",
+    },
     hero: {
       eyebrow: heroEyebrow,
       title: heroTitle,
@@ -211,6 +223,14 @@ async function saveSiteContent() {
   const payload = {
     brand: document.getElementById("site-brand").value.trim() || "Bees and Beers",
     email: document.getElementById("site-email").value.trim(),
+    theme: {
+      primary: document.getElementById("site-theme-primary").value || "#C97A3D",
+      secondary: document.getElementById("site-theme-primary").value || "#C97A3D",
+      bg: document.getElementById("site-theme-bg").value || "#241713",
+      bgDeep: document.getElementById("site-theme-bg").value || "#241713",
+      paper: "#F4ECDD",
+      ink: "#2B1B12",
+    },
     hero: {
       eyebrow: document.getElementById("site-hero-eyebrow").value.trim(),
       title: document.getElementById("site-hero-title").value.trim(),
